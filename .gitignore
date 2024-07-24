@@ -1,0 +1,14 @@
+# Node modules
+frontend/node_modules/
+# Build output
+frontend/.next/
+frontend/out/
+# Dependency directories
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+# Log files
+backend/logs/
+*.log
+# Environment variables
+backend/.env
