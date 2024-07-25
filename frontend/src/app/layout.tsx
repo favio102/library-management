@@ -1,5 +1,6 @@
 import { Footer, Navbar } from "@/components";
 import "../styles/global.css";
+import { Provider } from "@/components";
 
 export const metadata = {
   title: "Library Management",
@@ -10,11 +11,13 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
-        <main className="app">
-          <Navbar />
-          {children}
-          <Footer />
-        </main>
+        <Provider>
+          <main className="app">
+            <Navbar />
+            {children}
+            <Footer />
+          </main>
+        </Provider>
       </body>
     </html>
   );
