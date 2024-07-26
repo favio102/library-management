@@ -1,9 +1,8 @@
+// src/context/BookContext.tsx
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode } from "react";
-// import { fetchBooksFromAPI } from "../utils/api";
-
-
+import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import { fetchBooks } from "../utils/api"; // Adjust the path if necessary
 
 interface Book {
   id: string;
@@ -23,6 +22,23 @@ const BookContext = createContext<BookContextProps | undefined>(undefined);
 
 export const BookProvider = ({ children }: { children: ReactNode }) => {
   const [books, setBooks] = useState<Book[]>([]);
+
+  const loadBooks = async () => {
+    try {
+      const fetchedBooks = await fetchBooks();
+      if (Array.isArray(fetchedBooks)) {
+        setBooks(fetchedBooks);
+      } else {
+        console.error('Fetched data is not an array:', fetchedBooks);
+      }
+    } catch (error) {
+      console.error('Error loading books:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadBooks();
+  }, []);
 
   const addBook = (book: Book) => {
     setBooks([...books, book]);

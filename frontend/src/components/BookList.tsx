@@ -1,4 +1,3 @@
-// src/components/BookList.tsx
 import React from "react";
 import BookItem from "./BookItem";
 import { Book } from "../context/BookContext";

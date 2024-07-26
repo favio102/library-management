@@ -18,7 +18,7 @@ const Navbar = () => {
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
         <div className="flex gap-3 md:gap-5">
-          <Link href="/create-book" className="black_btn">
+          <Link href="/books" className="black_btn">
             Add a new book
           </Link>
         </div>
