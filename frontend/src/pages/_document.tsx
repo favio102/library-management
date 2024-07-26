@@ -1,5 +1,6 @@
-import { Html, Head, Main, NextScript } from 'next/document';
-import { Fragment } from 'react';
+import { Html, Head, Main, NextScript } from "next/document";
+import { Fragment } from "react";
+import { Footer, Navbar } from "@components";
 
 export default function Document() {
   return (
@@ -10,8 +11,12 @@ export default function Document() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <body>
-        <Main />
-        <NextScript />
+        <div className="app">
+          <Navbar />
+          <Main />
+          <NextScript />
+          <Footer />
+        </div>
       </body>
     </Html>
   );
