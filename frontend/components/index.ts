@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import SearchBar from "./SearchBar";
 import SearchButton from "./SearchButton";
 import BookCard from "./BookCard";
+import BookDetails from "./BookDetails";
 
 export {
   Hero,
@@ -13,5 +14,6 @@ export {
   Footer,
   SearchBar,
   SearchButton,
-  BookCard
+  BookCard,
+  BookDetails,
 };

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import CustomButton from "./CustomButton";
+import BookDetails from "./BookDetails";
 
 const BookCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,12 +36,10 @@ const BookCard = () => {
           />
         </div>
       </div>
-
-      {/* <CarDetails
+      <BookDetails
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
-        car={car}
-      /> */}
+      />
     </div>
   );
 };
