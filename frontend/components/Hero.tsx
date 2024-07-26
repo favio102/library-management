@@ -1,9 +1,33 @@
-import React from 'react'
+"use client";
+import React from "react";
+import CustomButton from "./CustomButton";
 
 const Hero = () => {
+  const handleScroll = () => {};
   return (
-    <div>Hero</div>
-  )
-}
+    <div className="hero">
+      <div className="flex-1 pt-36 padding-x">
+        <h1 className="hero__title">
+          Discover & Share books around the globe.
+        </h1>
 
-export default Hero
+        <p className="hero__subtitle">
+          Library Globe is an open-source application for modern world to
+          discover, create and share variety of books.
+        </p>
+        <CustomButton
+          title="Explore Cars"
+          containerStyles="bg-primary-blue text-white rounded-full mt-10"
+          handleClick={handleScroll}
+        />
+      </div>
+      <div className="hero__image-container">
+        <div className="hero__image"></div>
+
+        <div className="hero__image-overlay" />
+      </div>
+    </div>
+  );
+};
+
+export default Hero;
