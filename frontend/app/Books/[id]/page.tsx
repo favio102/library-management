@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-const page = () => {
+const BookPage = () => {
   const book = true;
   return (
     <section className="relative max-w-[1440px] mx-auto pt-16 md:pt-24 p-1">
@@ -87,4 +87,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default BookPage;

@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 import SearchButton from "./SearchButton";
 import BookCard from "./BookCard";
 import BookDetails from "./BookDetails";
+import Form from "./Form";
 
 export {
   Hero,
@@ -16,4 +17,5 @@ export {
   SearchButton,
   BookCard,
   BookDetails,
+  Form
 };
