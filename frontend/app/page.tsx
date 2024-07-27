@@ -1,8 +1,31 @@
+"use client";
+
 import Image from "next/image";
 import Hero from "@/components/Hero";
 import { BookCard, SearchBar } from "@/components";
+import { useEffect, useState } from "react";
+import { getBooks as fetchBooks } from "../utils/api";
+import { BookProps } from "@/types";
 
 export default function Home() {
+  const [books, setBooks] = useState<BookProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      try {
+        const data = await fetchBooks();
+        setBooks(data);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadBooks();
+  }, []);
+
   const isDataEmpty = false;
   return (
     <main className="overflow-hidden">
@@ -17,11 +40,16 @@ export default function Home() {
           <SearchBar />
         </div>
 
-        {!isDataEmpty ? (
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : isError ? (
+          <p>Error loading books.</p>
+        ) : books.length > 0 ? (
           <section>
             <div className="home__books-wrapper">
-              <BookCard />
-              <BookCard />
+              {books.map((book) => (
+                <BookCard key={book._id} book={book} />
+              ))}
             </div>
           </section>
         ) : (

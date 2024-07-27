@@ -5,8 +5,9 @@ import Image from "next/image";
 import CustomButton from "./CustomButton";
 import BookDetails from "./BookDetails";
 import Link from "next/link";
+import { BookCardProps } from "@/types";
 
-const BookCard = () => {
+const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -21,13 +22,13 @@ const BookCard = () => {
         />
       </div>
       <div className="flex flex-col items-center">
-        <h2 className="book-card__content-title">Title Book</h2>
-        <p className="flex mt-1 text-[12px] font-extrabold">Author</p>
-        <p className="flex mt-1 text-[12px] font-extrabold">Year</p>
+        <h2 className="book-card__content-title">{book.title}</h2>
+        <p className="flex mt-1 text-[12px] font-extrabold">{book.author}</p>
+        <p className="flex mt-1 text-[12px] font-extrabold">{book.year}</p>
       </div>
 
       <div className="relative flex flex-col w-full mt-2 group">
-        <Link href={`/books/1`} className="book-card__btn-container">
+        <Link href={`/books/${book._id}`} className="book-card__btn-container">
           <CustomButton
             title="View Details..."
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
@@ -36,7 +37,6 @@ const BookCard = () => {
             handleClick={() => setIsOpen(true)}
           />
         </Link>
-       
       </div>
 
       {/* <BookDetails
