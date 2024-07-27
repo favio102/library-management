@@ -13,7 +13,7 @@ const Button = ({
 }: CustomButtonProps) => (
   <button
     disabled={false}
-    type="button"
+    type={btnType}
     className={`custom-btn ${containerStyles} ${textStyles}`}
     onClick={handleClick}
   >

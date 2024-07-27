@@ -14,7 +14,7 @@ const BookCard = () => {
       <div className="relative w-full h-40 my-3 object-contain">
         <Image
           src="/book.jpeg"
-          alt="car model"
+          alt="book"
           fill
           priority
           className="object-contain"
@@ -27,7 +27,7 @@ const BookCard = () => {
       </div>
 
       <div className="relative flex flex-col w-full mt-2 group">
-        <Link href={`/books/id`} className="book-card__btn-container">
+        <Link href={`/books/1`} className="book-card__btn-container">
           <CustomButton
             title="View Details..."
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
