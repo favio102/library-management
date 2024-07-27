@@ -6,12 +6,25 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"library-management/config"
 	"library-management/routes"
 )
 
 func main() {
+	// Load environment variables
+	err := config.LoadEnv()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Initialize the database connection
+	client := config.ConnectDB()
+
+	// Initialize the router
 	router := mux.NewRouter()
-	routes.RegisterBookRoutes(router)
+
+	// Register routes and pass the database client
+	routes.RegisterBookRoutes(router, client)
 
 	// Configure CORS
 	corsHandler := cors.New(cors.Options{

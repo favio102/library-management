@@ -1,70 +1,162 @@
 package controllers
 
 import (
+    "context"
     "encoding/json"
     "net/http"
+    "time"
+
     "github.com/gorilla/mux"
-    "github.com/google/uuid"
+    "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/bson/primitive"
+    "go.mongodb.org/mongo-driver/mongo"
     "library-management/models"
 )
 
-var books []models.Book
+// BookController struct
+type BookController struct {
+    bookCollection *mongo.Collection
+}
+
+// NewBookController creates a new BookController
+func NewBookController(client *mongo.Client) *BookController {
+    bookCollection := client.Database("library").Collection("books")
+    return &BookController{bookCollection}
+}
 
 // GetBooks retrieves all books
-func GetBooks(w http.ResponseWriter, r *http.Request) {
+func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+
+    var books []models.Book
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    cursor, err := bc.bookCollection.Find(ctx, bson.M{})
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    defer cursor.Close(ctx)
+
+    for cursor.Next(ctx) {
+        var book models.Book
+        if err = cursor.Decode(&book); err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        books = append(books, book)
+    }
+
+    if err := cursor.Err(); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
     json.NewEncoder(w).Encode(books)
 }
 
 // GetBook retrieves a single book by ID
-func GetBook(w http.ResponseWriter, r *http.Request) {
+func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
     params := mux.Vars(r)
-    for _, item := range books {
-        if item.ID == params["id"] {
-            json.NewEncoder(w).Encode(item)
-            return
-        }
+
+    objID, err := primitive.ObjectIDFromHex(params["id"])
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
     }
-    http.NotFound(w, r)
+
+    var book models.Book
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    err = bc.bookCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&book)
+    if err != nil {
+        http.NotFound(w, r)
+        return
+    }
+
+    json.NewEncoder(w).Encode(book)
 }
 
 // CreateBook creates a new book with a unique ID
-func CreateBook(w http.ResponseWriter, r *http.Request) {
+func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
     var book models.Book
-    _ = json.NewDecoder(r.Body).Decode(&book)
-    
-    // Generate a unique ID for the new book
-    book.ID = uuid.New().String()
-    
-    books = append(books, book)
+    err := json.NewDecoder(r.Body).Decode(&book)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    book.ID = primitive.NewObjectID()
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    _, err = bc.bookCollection.InsertOne(ctx, book)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusCreated)
     json.NewEncoder(w).Encode(book)
 }
 
 // UpdateBook updates an existing book by ID
-func UpdateBook(w http.ResponseWriter, r *http.Request) {
+func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
     params := mux.Vars(r)
-    for index, item := range books {
-        if item.ID == params["id"] {
-            books = append(books[:index], books[index+1:]...)
-            var book models.Book
-            _ = json.NewDecoder(r.Body).Decode(&book)
-            book.ID = params["id"]
-            books = append(books, book)
-            json.NewEncoder(w).Encode(book)
-            return
-        }
+
+    objID, err := primitive.ObjectIDFromHex(params["id"])
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
     }
-    http.NotFound(w, r)
+
+    var book models.Book
+    err = json.NewDecoder(r.Body).Decode(&book)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    update := bson.M{
+        "$set": book,
+    }
+
+    _, err = bc.bookCollection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(book)
 }
 
 // DeleteBook deletes a book by ID
-func DeleteBook(w http.ResponseWriter, r *http.Request) {
+func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
     params := mux.Vars(r)
-    for index, item := range books {
-        if item.ID == params["id"] {
-            books = append(books[:index], books[index+1:]...)
-            json.NewEncoder(w).Encode(books)
-            return
-        }
+
+    objID, err := primitive.ObjectIDFromHex(params["id"])
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
     }
-    http.NotFound(w, r)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    _, err = bc.bookCollection.DeleteOne(ctx, bson.M{"_id": objID})
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode("Book deleted")
 }
