@@ -36,24 +36,7 @@ const BookCard = () => {
             handleClick={() => setIsOpen(true)}
           />
         </Link>
-        <div className="book-card__edit-btn-container">
-          <CustomButton
-            title="Edit"
-            containerStyles="w-full py-[16px] rounded-full bg-amber-500"
-            textStyles="text-white text-[14px] leading-[17px] font-bold"
-            rightIcon="/right-arrow.svg"
-            handleClick={() => setIsOpen(true)}
-          />
-        </div>
-        <div className="book-card__delete-btn-container">
-          <CustomButton
-            title="Delete"
-            containerStyles="w-full py-[16px] rounded-full bg-red-700"
-            textStyles="text-white text-[14px] leading-[17px] font-bold"
-            rightIcon="/right-arrow.svg"
-            handleClick={() => setIsOpen(true)}
-          />
-        </div>
+       
       </div>
 
       {/* <BookDetails

@@ -9,7 +9,6 @@ import { useRouter, usePathname } from "next/navigation";
 
 const NavBar = () => {
   const router = useRouter();
-  const currentPath = router.pathname;
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 

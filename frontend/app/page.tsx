@@ -22,10 +22,6 @@ export default function Home() {
             <div className="home__books-wrapper">
               <BookCard />
               <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
             </div>
           </section>
         ) : (

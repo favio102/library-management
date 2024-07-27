@@ -2,6 +2,7 @@
 import React from "react";
 import CustomButton from "./CustomButton";
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
   const handleScroll = () => {};
@@ -16,11 +17,13 @@ const Hero = () => {
           Library Globe is an open-source application for modern world to
           discover, create and share variety of books.
         </p>
-        <CustomButton
-          title="Explore Library"
-          containerStyles="bg-primary-blue text-white rounded-full mt-10"
-          handleClick={handleScroll}
-        />
+        <Link href="#discover">
+          <CustomButton
+            title="Explore Library"
+            containerStyles="bg-primary-blue text-white rounded-full mt-10"
+            handleClick={handleScroll}
+          />
+        </Link>
       </div>
       <div className="hero__image-container">
         <div className="hero__image">
