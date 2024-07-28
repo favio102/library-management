@@ -8,7 +8,7 @@ const Hero = () => {
   const handleScroll = () => {};
   return (
     <div className="hero">
-      <div className="flex-1 pt-36 padding-x">
+      <div className="flex-1 pt-6 padding-x">
         <h1 className="hero__title">
           Discover & Share books around the globe.
         </h1>
@@ -28,7 +28,7 @@ const Hero = () => {
       <div className="hero__image-container">
         <div className="hero__image">
           <Image
-            src="/library.png"
+            src="/hero.png"
             alt="hero"
             fill
             className="object-contain"

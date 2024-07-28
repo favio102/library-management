@@ -22,7 +22,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         />
       </div>
       <div className="flex flex-col items-center">
-        <h2 className="book-card__content-title">{book.title}</h2>
+        <h4 className="book-card__content-title">{book.title}</h4>
         <p className="flex mt-1 text-[12px] font-extrabold">{book.author}</p>
         <p className="flex mt-1 text-[12px] font-extrabold">{book.year}</p>
       </div>
