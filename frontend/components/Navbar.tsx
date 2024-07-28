@@ -5,12 +5,13 @@ import Image from "next/image";
 import CustomButton from "./CustomButton";
 import { useState } from "react";
 import BookDetails from "./BookDetails";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const NavBar = () => {
-  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+
+  const isBookPage = /^\/books\/[^/]+$/.test(pathname);
 
   return (
     // <header className='w-full  absolute z-10'>
@@ -22,7 +23,7 @@ const NavBar = () => {
       </Link>
 
       <div className="hidden md:flex items-center  gap-3 ">
-        {pathname === "/books/1" && (
+        {isBookPage ? (
           <>
             <CustomButton
               title="Delete Book"
@@ -37,14 +38,15 @@ const NavBar = () => {
               containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
             />
           </>
-        )}
-        {pathname === "/" && (
-          <CustomButton
-            title="Add a New Book"
-            btnType="button"
-            handleClick={() => setIsOpen(true)}
-            containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-          />
+        ) : (
+          <>
+            <CustomButton
+              title="Add a New Book"
+              btnType="button"
+              handleClick={() => setIsOpen(true)}
+              containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
+            />
+          </>
         )}
       </div>
       <BookDetails isOpen={isOpen} closeModal={() => setIsOpen(false)} />
