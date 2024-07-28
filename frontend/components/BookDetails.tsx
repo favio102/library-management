@@ -1,7 +1,6 @@
 "use client";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
-
 import {
   Dialog,
   Transition,
@@ -9,7 +8,7 @@ import {
   DialogPanel,
 } from "@headlessui/react";
 import Form from "./Form";
-import { createBook } from "@/utils/api";
+import { createBook, getBookById, updateBook } from "@/utils/api";
 import { BookProps } from "@/types";
 
 interface BookDetailsProps {
@@ -38,14 +37,32 @@ const BookDetails = ({
     publisher: "",
   });
 
+  useEffect(() => {
+    if (isEditing && bookId) {
+      const fetchBook = async () => {
+        try {
+          const bookData = await getBookById(bookId);
+          setBook(bookData);
+        } catch (error) {
+          console.error("Failed to fetch book details", error);
+        }
+      };
+      fetchBook();
+    }
+  }, [isEditing, bookId]);
+
   const handleSubmit = async () => {
     try {
-      if (!isEditing) {
+      if (isEditing) {
+        if (bookId) {
+          await updateBook(bookId, book);
+        }
+      } else {
         await createBook(book);
       }
       closeModal();
     } catch (error) {
-      console.error("Failed to submit book:", error);
+      console.error("Failed to submit book", error);
     }
   };
 

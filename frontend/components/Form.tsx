@@ -17,7 +17,13 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
   };
 
   return (
-    <form className="max-w-[1440px] p-3 md:p-5 rounded-lg" onSubmit={(e) => {e.preventDefault(); onSubmit();}}>
+    <form
+      className="max-w-[1440px] p-3 md:p-5 rounded-lg"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
       <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
         Book Info
       </h2>
