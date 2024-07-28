@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -9,13 +9,46 @@ import {
   DialogPanel,
 } from "@headlessui/react";
 import Form from "./Form";
+import { createBook } from "@/utils/api";
+import { BookProps } from "@/types";
 
 interface BookDetailsProps {
   isOpen: boolean;
   closeModal: () => void;
+  isEditing: boolean;
+  bookId: string | null;
 }
 
-const BookDetails = ({ isOpen, closeModal }: BookDetailsProps) => {
+const BookDetails = ({
+  isOpen,
+  closeModal,
+  isEditing,
+  bookId,
+}: BookDetailsProps) => {
+  const [book, setBook] = useState<BookProps>({
+    id: "",
+    title: "",
+    author: "",
+    description: "",
+    year: "",
+    edition: "",
+    language: "",
+    subject: "",
+    format: "",
+    publisher: "",
+  });
+
+  const handleSubmit = async () => {
+    try {
+      if (!isEditing) {
+        await createBook(book);
+      }
+      closeModal();
+    } catch (error) {
+      console.error("Failed to submit book:", error);
+    }
+  };
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -57,7 +90,7 @@ const BookDetails = ({ isOpen, closeModal }: BookDetailsProps) => {
                       className="object-contain"
                     />
                   </button>
-                  <Form />
+                  <Form book={book} setBook={setBook} onSubmit={handleSubmit} />
                 </DialogPanel>
               </TransitionChild>
             </div>
