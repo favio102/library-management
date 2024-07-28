@@ -32,7 +32,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <Link href={`/books/${book.id}`} className="book-card__btn-container">
           <CustomButton
             title="View Details..."
-            containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
+            containerStyles="w-full py-[16px] rounded-lg bg-violet-700"
             textStyles="text-white text-[14px] leading-[17px] font-bold"
           />
         </Link>

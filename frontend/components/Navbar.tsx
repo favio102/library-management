@@ -79,27 +79,28 @@ const NavBar = () => {
         {isBookPage ? (
           <>
             <CustomButton
-              title="Delete Book"
+              title="❌ Delete Book"
               btnType="button"
               handleClick={handleDelete}
-              containerStyles="text-white rounded-full bg-red-500 min-w-[130px] me-6"
+              containerStyles="text-black rounded bg-red-300 hover:bg-red-500 min-w-[130px] me-6"
             />
             <CustomButton
-              title="Edit Book"
+              title="✍🏻 Edit Book"
               btnType="button"
               handleClick={() =>
                 handleOpenModal(true, pathname.split("/").pop()!)
               }
-              containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
+              containerStyles="text-primary-blue hover:bg-blue-300 rounded bg-blue-200 min-w-[130px] me-6"
             />
           </>
         ) : (
-          <CustomButton
-            title="Add a New Book"
-            btnType="button"
-            handleClick={() => handleOpenModal(false)}
-            containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-          />
+          <></>
+          // <CustomButton
+          //   title="Add a New Book"
+          //   btnType="button"
+          //   handleClick={() => handleOpenModal(false)}
+          //   containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
+          // />
         )}
       </div>
       <BookDetails

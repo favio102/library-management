@@ -108,19 +108,27 @@ const BookDetails = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    {isEditing ? "Edit Book" : "Add New Book"}
+                    {isEditing ? (
+                      <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
+                        Edit Book
+                      </h2>
+                    ) : (
+                      <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
+                        Add New Book
+                      </h2>
+                    )}
                   </DialogTitle>
-                  <div className="mt-2">
+                  <div>
                     <Form
                       book={book}
                       setBook={setBook}
                       onSubmit={handleSubmit}
                     />
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-0">
                     <button
                       type="button"
-                      className="absolute top-2 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full"
+                      className="absolute top-5 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full"
                       onClick={closeModal}
                     >
                       <Image

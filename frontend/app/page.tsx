@@ -37,26 +37,26 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <CustomButton
-            title="Add a New Book"
-            btnType="button"
-            handleClick={() => handleOpenModal(false)}
-            containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-          />
         </div>
         {/* <div className="home__text-container">
           <h1 className="text-4xl font-extrabold">Book Catalogue</h1>
           <p>Explore out books you might like</p>
           <CustomButton
-            title="Add a New Book"
-            btnType="button"
-            handleClick={() => handleOpenModal(false)}
-            containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
+          title="Add a New Book"
+          btnType="button"
+          handleClick={() => handleOpenModal(false)}
+          containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
           />
-        </div> */}
+          </div> */}
 
         <div className="home__filters">
           <SearchBar />
+          <CustomButton
+            title="✚ Add a New Book"
+            btnType="button"
+            handleClick={() => handleOpenModal(false)}
+            containerStyles="text-fuchsia-400 rounded bg-white hover:bg-blue-100 min-w-[130px] me-6 border dark:border-slate-300"
+          />
         </div>
 
         {isLoading ? (

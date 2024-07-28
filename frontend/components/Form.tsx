@@ -24,9 +24,9 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
         onSubmit();
       }}
     >
-      <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
+      {/* <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
         Book Info
-      </h2>
+      </h2> */}
       <p className="text-gray-400 text-sm font-light my-2">
         Please enter your Book information.
       </p>
@@ -111,7 +111,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
         <CustomButton
           title="Submit"
           btnType="submit"
-          containerStyles="bg-blue-600 border text-white ml-auto mt-4 w-fit rounded-full dark:border-slate-600"
+          containerStyles="bg-blue-400 hover:bg-blue-600 border text-white ml-auto mt-4 w-fit rounded-lg dark:border-slate-600"
         />
       </div>
     </form>
