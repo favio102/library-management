@@ -1,15 +1,16 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+
+import { useBooks } from "@/context/BookContext";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 import BookDetails from "./BookDetails";
 import CustomButton from "./CustomButton";
-import { usePathname } from "next/navigation";
-import { deleteBook } from "@/utils/api";
 import { BookProps } from "@/types";
+import { deleteBook } from "@/utils/api";
 
 const NavBar = () => {
+  const { fetchBooks, addBook, updateBook } = useBooks();
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -57,6 +58,7 @@ const NavBar = () => {
       if (confirmed) {
         try {
           await deleteBook(id);
+          await fetchBooks();
           router.push("/");
         } catch (error) {
           console.error("Failed to delete book", error);
@@ -102,11 +104,16 @@ const NavBar = () => {
       </div>
       <BookDetails
         isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
+        closeModal={() => {
+          setIsOpen(false);
+          fetchBooks();
+        }}
         isEditing={isEditing}
         bookId={bookId}
         book={book}
         setBook={setBook}
+        onAddBook={addBook}
+        onUpdateBook={updateBook}
       />
     </nav>
   );

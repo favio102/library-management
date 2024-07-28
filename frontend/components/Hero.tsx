@@ -30,8 +30,12 @@ const Hero = () => {
           <Image
             src="/hero.png"
             alt="hero"
-            fill
+            // fill
+            width={500}
+            height={20}
             className="object-contain"
+            style={{ width: "auto", height: "auto" }}
+            priority
           />
         </div>
       </div>

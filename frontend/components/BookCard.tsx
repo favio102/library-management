@@ -8,7 +8,7 @@ import { BookCardProps } from "@/types";
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   useEffect(() => {
-    console.log("book object: ", book);
+    // console.log("book object: ", book);
   }, [book]);
   return (
     <div className="book-card group">
@@ -16,9 +16,12 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <Image
           src="/book.jpeg"
           alt="book"
-          fill
+          width={400}
+          height={400}
+          // fill
           priority
-          className="object-contain"
+          className={`object-contain}`}
+          style={{ width: "auto", height: "auto" }}
         />
       </div>
       <div className="flex flex-col items-center">

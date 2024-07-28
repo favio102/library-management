@@ -3,20 +3,18 @@
 import Image from "next/image";
 import Hero from "@/components/Hero";
 import { BookCard, SearchBar } from "@/components";
+import { useBooks } from "@/context/BookContext";
 import { useEffect, useState } from "react";
-import { getBooks as fetchBooks } from "../utils/api";
-import { BookProps } from "@/types";
 
 export default function Home() {
-  const [books, setBooks] = useState<BookProps[]>([]);
+  const { books, fetchBooks } = useBooks();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const data = await fetchBooks();
-        setBooks(data);
+        await fetchBooks();
       } catch (error) {
         setIsError(true);
       } finally {
@@ -26,7 +24,6 @@ export default function Home() {
     loadBooks();
   }, []);
 
-  const isDataEmpty = false;
   return (
     <main className="overflow-hidden">
       <Hero />

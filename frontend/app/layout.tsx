@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { BookProvider } from "@/context/BookContext";
 import "./globals.css";
 import { Navbar, Footer } from "@/components";
 
@@ -14,12 +14,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="relative">
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <BookProvider>
+      <html lang="en">
+        <body className="relative">
+          <Navbar />
+          {children}
+          <Footer />
+        </body>
+      </html>
+    </BookProvider>
   );
 }

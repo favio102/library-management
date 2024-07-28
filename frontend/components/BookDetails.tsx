@@ -6,9 +6,15 @@ import {
   Transition,
   TransitionChild,
   DialogPanel,
+  DialogTitle,
 } from "@headlessui/react";
 import Form from "./Form";
-import { createBook, getBookById, updateBook } from "@/utils/api";
+import {
+  createBook,
+  getBookById,
+  updateBook as updateBookApi,
+} from "@/utils/api";
+// import { useBooks } from "@/context/BookContext";
 import { BookProps } from "@/types";
 
 interface BookDetailsProps {
@@ -18,6 +24,8 @@ interface BookDetailsProps {
   bookId: string | null;
   book: BookProps;
   setBook: (book: BookProps) => void;
+  onAddBook: (book: BookProps) => Promise<void>;
+  onUpdateBook: (updatedBook: BookProps) => Promise<void>;
 }
 
 const BookDetails = ({
@@ -27,43 +35,41 @@ const BookDetails = ({
   bookId,
   book,
   setBook,
+  onAddBook,
+  onUpdateBook,
 }: BookDetailsProps) => {
+  // const { addBook, updateBook, fetchBooks } = useBooks();
+
   useEffect(() => {
     if (isEditing && bookId) {
       const fetchBook = async () => {
         try {
           const bookData = await getBookById(bookId);
+          console.log("Fetched Book Details:", bookData);
           setBook(bookData);
         } catch (error) {
           console.error("Failed to fetch book details", error);
         }
       };
       fetchBook();
-    } else {
-      setBook({
-        id: "",
-        title: "",
-        author: "",
-        description: "",
-        year: "",
-        edition: "",
-        language: "",
-        subject: "",
-        format: "",
-        publisher: "",
-      });
     }
-  }, [isEditing, bookId, setBook]);
+  }, [isEditing, bookId]);
 
   const handleSubmit = async () => {
     try {
       if (isEditing) {
         if (bookId) {
-          await updateBook(bookId, book);
+          // const updatedBook = await updateBookApi(bookId, book);
+          // console.log("Updated Book:", updatedBook);
+          await onUpdateBook(book);
         }
       } else {
-        await createBook(book);
+        await onAddBook(book);
+        // const newBook = await createBook(book);
+        // console.log("Created Book:", newBook);
+        // onAddBook(newBook);
       }
+      // await fetchBooks();
       closeModal();
     } catch (error) {
       console.error("Failed to submit book", error);
@@ -98,20 +104,34 @@ const BookDetails = ({
                 leaveTo="opacity-0 scale-95"
               >
                 <DialogPanel className="relative w-full max-w-[700px] max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5">
-                  <button
-                    type="button"
-                    className="absolute top-2 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full"
-                    onClick={closeModal}
+                  <DialogTitle
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    <Image
-                      src="/close.svg"
-                      alt="close"
-                      width={20}
-                      height={20}
-                      className="object-contain"
+                    {isEditing ? "Edit Book" : "Add New Book"}
+                  </DialogTitle>
+                  <div className="mt-2">
+                    <Form
+                      book={book}
+                      setBook={setBook}
+                      onSubmit={handleSubmit}
                     />
-                  </button>
-                  <Form book={book} setBook={setBook} onSubmit={handleSubmit} />
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full"
+                      onClick={closeModal}
+                    >
+                      <Image
+                        src="/close.svg"
+                        alt="close"
+                        width={20}
+                        height={20}
+                        className="object-contain"
+                      />
+                    </button>
+                  </div>
                 </DialogPanel>
               </TransitionChild>
             </div>
