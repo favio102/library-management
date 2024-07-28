@@ -10,7 +10,7 @@ const Hero = () => {
     <div className="hero">
       <div className="flex-1 pt-6 padding-x">
         <h1 className="hero__title">
-          Discover & Share books around the globe.
+          Discover & Share books.
         </h1>
 
         <p className="hero__subtitle">

@@ -1,32 +1,42 @@
 "use client";
 
-import { getBookById } from "@/utils/api";
+import { useBooks } from "@/context/BookContext";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BookProps } from "@/types";
 
 const BookPage = () => {
   const { id } = useParams();
+  const router = useRouter();
+  const { books, updateBook } = useBooks();
   const [book, setBook] = useState<BookProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (id) {
-      const fetchBook = async () => {
-        try {
-          const bookData = await getBookById(id as string);
+      const fetchBook = () => {
+        const bookData = books.find((book) => book.id === id);
+        if (bookData) {
           setBook(bookData);
-        } catch (error) {
+        } else {
           setIsError(true);
-        } finally {
-          setIsLoading(false);
         }
+        setIsLoading(false);
       };
       fetchBook();
     }
-  }, [id]);
+  }, [id, books]);
+
+  const handleUpdateBook = async (updatedBook: BookProps) => {
+    try {
+      await updateBook(updatedBook);
+      router.push(`/books/${updatedBook.id}`);
+    } catch (error) {
+      console.error("Failed to update book", error);
+    }
+  };
 
   if (isLoading) {
     return <p>Loading...</p>;
