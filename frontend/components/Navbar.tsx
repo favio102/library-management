@@ -1,14 +1,16 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-import CustomButton from "./CustomButton";
 import { useState } from "react";
 import BookDetails from "./BookDetails";
+import CustomButton from "./CustomButton";
 import { usePathname } from "next/navigation";
+import { deleteBook } from "@/utils/api";
 
 const NavBar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [bookId, setBookId] = useState<string | null>(null);
@@ -19,6 +21,21 @@ const NavBar = () => {
     setIsEditing(editing);
     setBookId(id);
     setIsOpen(true);
+  };
+
+  const handleDelete = async () => {
+    const id = pathname.split("/").pop();
+    if (id) {
+      const confirmed = window.confirm("Are you sure you want to delete?");
+      if (confirmed) {
+        try {
+          await deleteBook(id);
+          router.push("/");
+        } catch (error) {
+          console.error("Failed to delete book", error);
+        }
+      }
+    }
   };
 
   return (
@@ -35,28 +52,33 @@ const NavBar = () => {
             <CustomButton
               title="Delete Book"
               btnType="button"
-              handleClick={() => handleOpenModal(false)}
+              handleClick={handleDelete}
               containerStyles="text-white rounded-full bg-red-500 min-w-[130px] me-6"
             />
             <CustomButton
               title="Edit Book"
               btnType="button"
-              handleClick={() => handleOpenModal(true, pathname.split("/").pop()!)}
+              handleClick={() =>
+                handleOpenModal(true, pathname.split("/").pop()!)
+              }
               containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
             />
           </>
         ) : (
-          <>
-            <CustomButton
-              title="Add a New Book"
-              btnType="button"
-              handleClick={() => handleOpenModal(false)}
-              containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-            />
-          </>
+          <CustomButton
+            title="Add a New Book"
+            btnType="button"
+            handleClick={() => handleOpenModal(false)}
+            containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
+          />
         )}
       </div>
-      <BookDetails isOpen={isOpen} closeModal={() => setIsOpen(false)} isEditing={isEditing} bookId={bookId} />
+      <BookDetails
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        isEditing={isEditing}
+        bookId={bookId}
+      />
     </nav>
   );
 };
