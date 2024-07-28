@@ -32,15 +32,17 @@ export default function Home() {
           <div className="flex justify-center items-center">
             <div className="home__text-container">
               <h1 className="text-4xl font-extrabold">Book Catalogue</h1>
-              <p>Explore out books you might like or add a new book.</p>
+              <p>
+                Explore out books you might like or share a book to the world.
+              </p>
             </div>
           </div>
-            <CustomButton
-              title="Add a New Book"
-              btnType="button"
-              handleClick={() => handleOpenModal(false)}
-              containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-            />
+          <CustomButton
+            title="Add a New Book"
+            btnType="button"
+            handleClick={() => handleOpenModal(false)}
+            containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
+          />
         </div>
         {/* <div className="home__text-container">
           <h1 className="text-4xl font-extrabold">Book Catalogue</h1>
