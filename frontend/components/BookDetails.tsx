@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 import Image from "next/image";
 import {
   Dialog,
@@ -16,6 +16,8 @@ interface BookDetailsProps {
   closeModal: () => void;
   isEditing: boolean;
   bookId: string | null;
+  book: BookProps;
+  setBook: (book: BookProps) => void;
 }
 
 const BookDetails = ({
@@ -23,20 +25,9 @@ const BookDetails = ({
   closeModal,
   isEditing,
   bookId,
+  book,
+  setBook,
 }: BookDetailsProps) => {
-  const [book, setBook] = useState<BookProps>({
-    id: "",
-    title: "",
-    author: "",
-    description: "",
-    year: "",
-    edition: "",
-    language: "",
-    subject: "",
-    format: "",
-    publisher: "",
-  });
-
   useEffect(() => {
     if (isEditing && bookId) {
       const fetchBook = async () => {
@@ -48,8 +39,21 @@ const BookDetails = ({
         }
       };
       fetchBook();
+    } else {
+      setBook({
+        id: "",
+        title: "",
+        author: "",
+        description: "",
+        year: "",
+        edition: "",
+        language: "",
+        subject: "",
+        format: "",
+        publisher: "",
+      });
     }
-  }, [isEditing, bookId]);
+  }, [isEditing, bookId, setBook]);
 
   const handleSubmit = async () => {
     try {

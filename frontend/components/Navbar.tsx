@@ -7,6 +7,7 @@ import BookDetails from "./BookDetails";
 import CustomButton from "./CustomButton";
 import { usePathname } from "next/navigation";
 import { deleteBook } from "@/utils/api";
+import { BookProps } from "@/types";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -14,12 +15,38 @@ const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [bookId, setBookId] = useState<string | null>(null);
+  const [book, setBook] = useState<BookProps>({
+    id: "",
+    title: "",
+    author: "",
+    description: "",
+    year: "",
+    edition: "",
+    language: "",
+    subject: "",
+    format: "",
+    publisher: "",
+  });
 
   const isBookPage = /^\/books\/[^/]+$/.test(pathname);
 
   const handleOpenModal = (editing: boolean, id: string | null = null) => {
     setIsEditing(editing);
     setBookId(id);
+    if (!editing) {
+      setBook({
+        id: "",
+        title: "",
+        author: "",
+        description: "",
+        year: "",
+        edition: "",
+        language: "",
+        subject: "",
+        format: "",
+        publisher: "",
+      });
+    }
     setIsOpen(true);
   };
 
@@ -78,6 +105,8 @@ const NavBar = () => {
         closeModal={() => setIsOpen(false)}
         isEditing={isEditing}
         bookId={bookId}
+        book={book}
+        setBook={setBook}
       />
     </nav>
   );
