@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomButton from "./CustomButton";
-import BookDetails from "./BookDetails";
 import Link from "next/link";
 import { BookCardProps } from "@/types";
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+  useEffect(() => {
+    console.log("book object: ", book);
+  }, [book]);
   return (
     <div className="book-card group">
       <div className="relative w-full h-40 my-3 object-contain">
@@ -28,21 +28,14 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
       </div>
 
       <div className="relative flex flex-col w-full mt-2 group">
-        <Link href={`/books/${book._id}`} className="book-card__btn-container">
+        <Link href={`/books/${book.id}`} className="book-card__btn-container">
           <CustomButton
             title="View Details..."
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
             textStyles="text-white text-[14px] leading-[17px] font-bold"
-            rightIcon="/right-arrow.svg"
-            handleClick={() => setIsOpen(true)}
           />
         </Link>
       </div>
-
-      {/* <BookDetails
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-      /> */}
     </div>
   );
 };

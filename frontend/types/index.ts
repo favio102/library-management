@@ -19,7 +19,7 @@ export interface CustomInputProps {
 }
 
 export interface BookProps {
-  _id: string;
+  id: string;
   title: string;
   author: string;
   year: string;
@@ -33,7 +33,7 @@ export interface BookProps {
 
 export interface BookCardProps {
   book: {
-    _id: string;
+    id: string;
     title: string;
     author: string;
     year: string;

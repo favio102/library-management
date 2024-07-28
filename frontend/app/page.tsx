@@ -48,7 +48,7 @@ export default function Home() {
           <section>
             <div className="home__books-wrapper">
               {books.map((book) => (
-                <BookCard key={book._id} book={book} />
+                <BookCard key={book.id} book={book} />
               ))}
             </div>
           </section>
