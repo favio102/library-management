@@ -7,21 +7,19 @@ import Link from "next/link";
 import { BookCardProps } from "@/types";
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
-  useEffect(() => {
-    // console.log("book object: ", book);
-  }, [book]);
+  useEffect(() => {}, [book]);
   return (
     <div className="book-card group">
-      <div className="relative w-full h-40 my-3 object-contain">
+      <div className="relative w-full h-40 my-3 flex justify-center items-center">
         <Image
           src="/book.jpeg"
           alt="book"
-          width={400}
-          height={400}
+          width={100}
+          height={50}
           // fill
           priority
-          className={`object-contain}`}
-          style={{ width: "auto", height: "auto" }}
+          className="object-contain"
+          // style={{ width: "auto", height: "auto" }}
         />
       </div>
       <div className="flex flex-col items-center">

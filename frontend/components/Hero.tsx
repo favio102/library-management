@@ -13,10 +13,6 @@ const Hero = () => {
           Discover & Share books.
         </h1>
 
-        <p className="hero__subtitle">
-          Library Globe is an open-source application for modern world to
-          discover, create and share variety of books.
-        </p>
         <Link href="#discover">
           <CustomButton
             title="Explore Library"
@@ -24,6 +20,10 @@ const Hero = () => {
             handleClick={handleScroll}
           />
         </Link>
+        <p className="hero__subtitle">
+          Library Globe is an open-source application for modern world to
+          discover, create and share variety of books.
+        </p>
       </div>
       <div className="hero__image-container">
         <div className="hero__image">

@@ -47,7 +47,7 @@
 }
 
 .hero__subtitle {
-  @apply text-[27px] text-black-100 font-light mt-5;
+  @apply text-[27px] text-black-100 font-light mt-12;
 }
 
 .hero__image-container {
@@ -112,7 +112,7 @@
 }
 
 .book-card__image {
-  @apply relative w-full h-40 my-3 object-contain;
+  @apply relative w-full h-40 my-3 flex justify-center items-center;
 }
 
 .book-card__icon-container {
