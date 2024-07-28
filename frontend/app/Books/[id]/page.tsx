@@ -2,13 +2,12 @@
 
 import { getBookById } from "@/utils/api";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BookProps } from "@/types";
 
 const BookPage = () => {
-  const router = useRouter();
-  const { id } = router.query;
+  const { id } = useParams();
   const [book, setBook] = useState<BookProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
