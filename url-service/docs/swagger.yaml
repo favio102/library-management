@@ -1,0 +1,50 @@
+basePath: /
+definitions:
+  handlers.Request:
+    properties:
+      operation:
+        type: string
+      url:
+        type: string
+    type: object
+  handlers.Response:
+    properties:
+      processed_url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a service to clean and redirect URLs.
+  title: URL Cleanup and Redirection Service
+  version: "1.0"
+paths:
+  /process-url:
+    post:
+      consumes:
+      - application/json
+      description: Process the URL according to the given operation type.
+      parameters:
+      - description: URL and operation type
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Invalid request payload
+          schema:
+            type: string
+        "500":
+          description: Failed to send response
+          schema:
+            type: string
+      summary: Process URL
+swagger: "2.0"
