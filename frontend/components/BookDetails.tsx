@@ -104,10 +104,11 @@ const BookDetails = ({
                 leaveTo="opacity-0 scale-95"
               >
                 <DialogPanel className="relative w-full max-w-[700px] max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5">
-                  <DialogTitle
+                  <div>
+                    {/* <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
-                  >
+                  > */}
                     {isEditing ? (
                       <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
                         Edit Book
@@ -117,8 +118,7 @@ const BookDetails = ({
                         Add New Book
                       </h2>
                     )}
-                  </DialogTitle>
-                  <div>
+                    {/* </DialogTitle> */}
                     <Form
                       book={book}
                       setBook={setBook}
