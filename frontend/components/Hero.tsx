@@ -16,7 +16,7 @@ const Hero = () => {
         <Link href="#discover">
           <CustomButton
             title="Explore Library"
-            containerStyles="bg-blue-800 hover:bg-blue-700 text-white rounded mt-10"
+            containerStyles="bg-white hover:bg-blue-700 text-black hover:text-white hover:font-bold rounded-lg mt-10 border dark:border-blue-600"
             handleClick={handleScroll}
           />
         </Link>

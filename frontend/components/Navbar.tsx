@@ -79,10 +79,10 @@ const NavBar = () => {
         {isBookPage ? (
           <>
             <CustomButton
-              title="❌ Delete Book"
+              title="❌  Delete Book"
               btnType="button"
               handleClick={handleDelete}
-              containerStyles="text-black rounded bg-red-300 hover:bg-red-500 min-w-[130px] me-6"
+              containerStyles="text-black rounded-lg bg-white hover:bg-red-200 hover:text-red-800 hover:font-bold min-w-[130px] me-6 border dark:border-red-200"
             />
             <CustomButton
               title="✍🏻 Edit Book"
@@ -90,7 +90,7 @@ const NavBar = () => {
               handleClick={() =>
                 handleOpenModal(true, pathname.split("/").pop()!)
               }
-              containerStyles="text-primary-blue hover:bg-blue-300 rounded bg-blue-200 min-w-[130px] me-6"
+              containerStyles="text-black bg-white hover:bg-blue-300 border dark:border-blue-300 rounded min-w-[130px] hover:text-blue-900 hover:font-bold me-6"
             />
           </>
         ) : (

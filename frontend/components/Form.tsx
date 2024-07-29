@@ -111,7 +111,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
         <CustomButton
           title="Submit"
           btnType="submit"
-          containerStyles="bg-blue-400 hover:bg-blue-600 border text-white ml-auto mt-4 w-fit rounded-lg dark:border-slate-600"
+          containerStyles="bg-white hover:bg-blue-700 border text-black hover:text-white ml-auto mt-4 w-fit rounded-lg hover:font-bold dark:border-blue-600"
         />
       </div>
     </form>

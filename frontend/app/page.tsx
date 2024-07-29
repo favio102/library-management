@@ -93,7 +93,7 @@ export default function Home() {
             title="✚ Add a New Book"
             btnType="button"
             handleClick={() => handleOpenModal(false)}
-            containerStyles="text-fuchsia-400 rounded bg-white hover:bg-blue-100 min-w-[130px] me-6 border dark:border-slate-300"
+            containerStyles="text-fuchsia-400 rounded bg-white hover:bg-blue-100 min-w-[130px] me-6 border dark:border-slate-300 hover:text-blue-800 hover:font-bold"
           />
         </div>
         <BookDetails
