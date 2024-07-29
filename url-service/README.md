@@ -133,6 +133,9 @@ This will execute all unit tests for the handlers and utility functions.
 Swagger documentation is available at http://localhost:8080/swagger/index.html.
 
 <!-- insert images -->
+![Screenshot 2024-07-29 at 9 41 32 AM](https://github.com/user-attachments/assets/03d2aaad-6966-4d81-b9c7-e50980edcbd1)
+![Screenshot 2024-07-29 at 9 41 43 AM](https://github.com/user-attachments/assets/c707be3b-116f-46b2-9b52-6a6f6350e712)
+![Screenshot 2024-07-29 at 9 42 26 AM](https://github.com/user-attachments/assets/cdf69a0f-9430-4902-840c-04c87dbf2040)
 
 ### Generating Swagger Documentation
 
