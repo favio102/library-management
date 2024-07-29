@@ -8,6 +8,7 @@ const CustomInput = ({
   btnType = "text",
   value,
   onChange,
+  required
 }: CustomInputProps) => {
   return (
     <div className="flex flex-col w-full gap-2">
@@ -18,6 +19,7 @@ const CustomInput = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder.slice(0, 251)}
+        required
         className="pl-4 py-2.5 bg-transparent rounded-md border dark:border-slate-700 outline-none w-full"
       />
     </div>

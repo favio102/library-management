@@ -16,6 +16,7 @@ export interface CustomInputProps {
   btnType?: "text" | "number" | "radio" | "number";
   value?: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  required: boolean
 }
 
 export interface BookProps {
