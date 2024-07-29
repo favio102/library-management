@@ -14,6 +14,7 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState(false);
   const [bookId, setBookId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [book, setBook] = useState<BookProps>({
     id: "",
     title: "",
@@ -60,6 +61,15 @@ export default function Home() {
     loadBooks();
   }, []);
 
+  const filteredBooks = books.filter((book) => {
+    const query = searchQuery.toLocaleLowerCase();
+    return (
+      book.title.toLocaleLowerCase().includes(query) ||
+      book.author.toLocaleLowerCase().includes(query) ||
+      book.year.toLocaleLowerCase().includes(query)
+    );
+  });
+
   return (
     <main className="overflow-hidden">
       <Hero />
@@ -74,19 +84,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* <div className="home__text-container">
-          <h1 className="text-4xl font-extrabold">Book Catalogue</h1>
-          <p>Explore out books you might like</p>
-          <CustomButton
-          title="Add a New Book"
-          btnType="button"
-          handleClick={() => handleOpenModal(false)}
-          containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-          />
-          </div> */}
-
         <div className="home__filters">
-          <SearchBar />
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
           <CustomButton
             title="✚ Add a New Book"
             btnType="button"
@@ -112,17 +114,17 @@ export default function Home() {
           <p>Loading...</p>
         ) : isError ? (
           <p>Error loading books.</p>
-        ) : books.length > 0 ? (
+        ) : filteredBooks.length > 0 ? (
           <section>
             <div className="home__books-wrapper">
-              {books.map((book) => (
+              {filteredBooks.map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
             </div>
           </section>
         ) : (
           <div className="home__error-container">
-            <h2 className="text-black text-xl font-bold">Library is empty.</h2>
+            <h2 className="text-black text-xl font-bold">No Books Found.</h2>
           </div>
         )}
       </div>

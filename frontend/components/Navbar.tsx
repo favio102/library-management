@@ -95,12 +95,6 @@ const NavBar = () => {
           </>
         ) : (
           <></>
-          // <CustomButton
-          //   title="Add a New Book"
-          //   btnType="button"
-          //   handleClick={() => handleOpenModal(false)}
-          //   containerStyles="text-primary-blue rounded-full bg-blue-200 min-w-[130px] me-6"
-          // />
         )}
       </div>
       <BookDetails
