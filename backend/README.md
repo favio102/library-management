@@ -64,6 +64,15 @@ It provides interactive API documentation for testing and exploring the endpoint
 ## Screenshots
 
 <!-- Include backend-specific screenshots or API documentation screenshots here. -->
+<img width="800" alt="Screenshot 2024-07-29 at 7 56 57 AM" src="https://github.com/user-attachments/assets/9c16ad10-e459-48ff-8b2c-7a07db0418d5">
+<img width="800" alt="Screenshot 2024-07-29 at 7 57 39 AM" src="https://github.com/user-attachments/assets/37609671-ab5c-4a04-b7a1-4664806a4541">
+
+<img width="1218" alt="Screenshot 2024-07-29 at 7 57 59 AM" src="https://github.com/user-attachments/assets/f0be33fd-706a-4c4b-b1d5-5722aa68e931">
+
+<img width="1250" alt="Screenshot 2024-07-29 at 7 58 14 AM" src="https://github.com/user-attachments/assets/df7f52af-855a-4421-9286-f7c24f4b15d4">
+
+
+
 
 ## Additional Notes
 
