@@ -15,6 +15,16 @@ type Response struct {
     ProcessedURL string `json:"processed_url"`
 }
 
+// ProcessURL godoc
+// @Summary Process URL
+// @Description Process the URL according to the given operation type.
+// @Accept  json
+// @Produce  json
+// @Param   request body Request true "URL and operation type"
+// @Success 200 {object} Response
+// @Failure 400 {string} string "Invalid request payload"
+// @Failure 500 {string} string "Failed to send response"
+// @Router /process-url [post]
 func ProcessURL(w http.ResponseWriter, r *http.Request) {
     var req Request
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
