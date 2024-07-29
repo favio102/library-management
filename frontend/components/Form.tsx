@@ -38,6 +38,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             placeholder="Book Title"
             value={book.title}
             onChange={handleChange}
+            required
           />
           <CustomInput
             label="Author"
@@ -45,6 +46,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             placeholder="Author"
             value={book.author}
             onChange={handleChange}
+            required
           />
           <CustomInput
             label="Description"
@@ -52,6 +54,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             placeholder="Description"
             value={book.description}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="flex flex-col md:flex-row items-center w-full gap-1 md:gap-4">
@@ -62,6 +65,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             btnType="number"
             value={book.year}
             onChange={handleChange}
+            required
           />
           <CustomInput
             label="Edition"
@@ -70,6 +74,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             btnType="text"
             value={book.edition}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="flex flex-col md:flex-row items-center w-full gap-1 md:gap-4">
@@ -80,6 +85,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             btnType="text"
             value={book.language}
             onChange={handleChange}
+            required
           />
           <CustomInput
             label="Subjects/Keywords"
@@ -88,6 +94,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             btnType="text"
             value={book.subject}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="flex flex-col md:flex-row items-center w-full gap-1 md:gap-4">
@@ -98,6 +105,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             btnType="text"
             value={book.format}
             onChange={handleChange}
+            required
           />
           <CustomInput
             label="Publisher"
@@ -106,6 +114,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             btnType="text"
             value={book.publisher}
             onChange={handleChange}
+            required
           />
         </div>
         <CustomButton
