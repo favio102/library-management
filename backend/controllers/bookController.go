@@ -3,6 +3,7 @@ package controllers
 import (
     "context"
     "encoding/json"
+    "fmt"
     "net/http"
     "time"
 
@@ -11,6 +12,7 @@ import (
     "go.mongodb.org/mongo-driver/bson/primitive"
     "go.mongodb.org/mongo-driver/mongo"
     "library-management/models"
+    "log"
 )
 
 // BookController struct
@@ -24,6 +26,15 @@ func NewBookController(client *mongo.Client) *BookController {
     return &BookController{bookCollection}
 }
 
+// validateBook validates the book fields
+func validateBook(book *models.Book) error {
+    if book.Title == "" {
+        return fmt.Errorf("title cannot be empty")
+    }
+    // Add more validation rules as needed
+    return nil
+}
+
 // GetBooks retrieves all books
 func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
@@ -34,6 +45,7 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
 
     cursor, err := bc.bookCollection.Find(ctx, bson.M{})
     if err != nil {
+        log.Println("Error fetching books:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
@@ -42,6 +54,7 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
     for cursor.Next(ctx) {
         var book models.Book
         if err = cursor.Decode(&book); err != nil {
+            log.Println("Error decoding book:", err)
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
         }
@@ -49,6 +62,7 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
     }
 
     if err := cursor.Err(); err != nil {
+        log.Println("Cursor error:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
@@ -63,6 +77,7 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 
     objID, err := primitive.ObjectIDFromHex(params["id"])
     if err != nil {
+        log.Println("Invalid book ID:", err)
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
@@ -73,6 +88,7 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 
     err = bc.bookCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&book)
     if err != nil {
+        log.Println("Error fetching book:", err)
         http.NotFound(w, r)
         return
     }
@@ -86,6 +102,14 @@ func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
     var book models.Book
     err := json.NewDecoder(r.Body).Decode(&book)
     if err != nil {
+        log.Println("Error decoding request body:", err)
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Validate book fields
+    if err := validateBook(&book); err != nil {
+        log.Println("Validation error:", err)
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
@@ -96,6 +120,7 @@ func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
 
     _, err = bc.bookCollection.InsertOne(ctx, book)
     if err != nil {
+        log.Println("Error inserting book:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
@@ -111,6 +136,7 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 
     objID, err := primitive.ObjectIDFromHex(params["id"])
     if err != nil {
+        log.Println("Invalid book ID:", err)
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
@@ -118,6 +144,14 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
     var book models.Book
     err = json.NewDecoder(r.Body).Decode(&book)
     if err != nil {
+        log.Println("Error decoding request body:", err)
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Validate book fields
+    if err := validateBook(&book); err != nil {
+        log.Println("Validation error:", err)
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
@@ -131,6 +165,7 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 
     _, err = bc.bookCollection.UpdateOne(ctx, bson.M{"_id": objID}, update)
     if err != nil {
+        log.Println("Error updating book:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
@@ -145,6 +180,7 @@ func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 
     objID, err := primitive.ObjectIDFromHex(params["id"])
     if err != nil {
+        log.Println("Invalid book ID:", err)
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
@@ -154,6 +190,7 @@ func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 
     _, err = bc.bookCollection.DeleteOne(ctx, bson.M{"_id": objID})
     if err != nil {
+        log.Println("Error deleting book:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
