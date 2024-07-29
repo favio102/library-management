@@ -16,10 +16,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           alt="book"
           width={100}
           height={50}
-          // fill
           priority
           className="object-contain"
-          // style={{ width: "auto", height: "auto" }}
         />
       </div>
       <div className="flex flex-col items-center">

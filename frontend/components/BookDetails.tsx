@@ -9,12 +9,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import Form from "./Form";
-import {
-  createBook,
-  getBookById,
-  updateBook as updateBookApi,
-} from "@/utils/api";
-// import { useBooks } from "@/context/BookContext";
+import { getBookById, updateBook as updateBookApi } from "@/utils/api";
 import { BookProps } from "@/types";
 
 interface BookDetailsProps {
@@ -38,8 +33,6 @@ const BookDetails = ({
   onAddBook,
   onUpdateBook,
 }: BookDetailsProps) => {
-  // const { addBook, updateBook, fetchBooks } = useBooks();
-
   useEffect(() => {
     if (isEditing && bookId) {
       const fetchBook = async () => {
@@ -59,17 +52,11 @@ const BookDetails = ({
     try {
       if (isEditing) {
         if (bookId) {
-          // const updatedBook = await updateBookApi(bookId, book);
-          // console.log("Updated Book:", updatedBook);
           await onUpdateBook(book);
         }
       } else {
         await onAddBook(book);
-        // const newBook = await createBook(book);
-        // console.log("Created Book:", newBook);
-        // onAddBook(newBook);
       }
-      // await fetchBooks();
       closeModal();
     } catch (error) {
       console.error("Failed to submit book", error);
@@ -105,10 +92,6 @@ const BookDetails = ({
               >
                 <DialogPanel className="relative w-full max-w-[700px] max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5">
                   <div>
-                    {/* <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  > */}
                     {isEditing ? (
                       <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
                         Edit Book
@@ -118,7 +101,6 @@ const BookDetails = ({
                         Add New Book
                       </h2>
                     )}
-                    {/* </DialogTitle> */}
                     <Form
                       book={book}
                       setBook={setBook}

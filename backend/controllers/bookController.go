@@ -31,7 +31,6 @@ func validateBook(book *models.Book) error {
 	if book.Title == "" {
 		return fmt.Errorf("title cannot be empty")
 	}
-	// Add more validation rules as needed
 	return nil
 }
 

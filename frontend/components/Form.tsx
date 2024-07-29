@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { CustomButton, CustomInput } from "@/components";
-import { createBook } from "@/utils/api";
 import { BookProps } from "@/types";
 
 interface FormProps {
@@ -24,9 +23,6 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
         onSubmit();
       }}
     >
-      {/* <h2 className="text-xl md:text-2xl text-blue-500 tracking-wide font-bold my-1 uppercase">
-        Book Info
-      </h2> */}
       <p className="text-gray-400 text-sm font-light my-2">
         Please enter your Book information.
       </p>

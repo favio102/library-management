@@ -8,7 +8,7 @@ const CustomInput = ({
   btnType = "text",
   value,
   onChange,
-  required
+  required,
 }: CustomInputProps) => {
   return (
     <div className="flex flex-col w-full gap-2">
