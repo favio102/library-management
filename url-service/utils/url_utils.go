@@ -30,5 +30,11 @@ func RedirectURL(rawURL string) string {
 
     // Ensure domain is www.byfood.com
     u.Host = "www.byfood.com"
+    
+    // Remove query parameters
+    u.RawQuery = ""
+    // Remove trailing slash
+    u.Path = strings.TrimSuffix(u.Path, "/")
+    
     return u.String()
 }
