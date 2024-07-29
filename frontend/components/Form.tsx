@@ -2,13 +2,7 @@
 
 import React, { useState } from "react";
 import { CustomButton, CustomInput } from "@/components";
-import { BookProps } from "@/types";
-
-interface FormProps {
-  book: BookProps;
-  setBook: (book: BookProps) => void;
-  onSubmit: () => void;
-}
+import { FormProps } from "@/types";
 
 const Form = ({ book, setBook, onSubmit }: FormProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

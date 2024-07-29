@@ -16,7 +16,7 @@ export interface CustomInputProps {
   btnType?: "text" | "number" | "radio" | "number";
   value?: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  required: boolean
+  required: boolean;
 }
 
 export interface BookProps {
@@ -45,4 +45,33 @@ export interface BookCardProps {
     publisher?: string;
     format?: string;
   };
+}
+
+export interface BookDetailsProps {
+  isOpen: boolean;
+  closeModal: () => void;
+  isEditing: boolean;
+  bookId: string | null;
+  book: BookProps;
+  setBook: (book: BookProps) => void;
+  onAddBook: (book: BookProps) => Promise<void>;
+  onUpdateBook: (updatedBook: BookProps) => Promise<void>;
+}
+
+export interface FormProps {
+  book: BookProps;
+  setBook: (book: BookProps) => void;
+  onSubmit: () => void;
+}
+
+export interface SearchBarProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
+
+export interface BookContextProps {
+  books: BookProps[];
+  fetchBooks: () => Promise<void>;
+  addBook: (book: BookProps) => Promise<void>;
+  updateBook: (updatedBook: BookProps) => Promise<void>;
 }

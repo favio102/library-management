@@ -1,11 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-
-interface SearchBarProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-}
+import { SearchBarProps } from "@/types";
 
 const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,

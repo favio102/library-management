@@ -10,18 +10,7 @@ import {
 } from "@headlessui/react";
 import Form from "./Form";
 import { getBookById, updateBook as updateBookApi } from "@/utils/api";
-import { BookProps } from "@/types";
-
-interface BookDetailsProps {
-  isOpen: boolean;
-  closeModal: () => void;
-  isEditing: boolean;
-  bookId: string | null;
-  book: BookProps;
-  setBook: (book: BookProps) => void;
-  onAddBook: (book: BookProps) => Promise<void>;
-  onUpdateBook: (updatedBook: BookProps) => Promise<void>;
-}
+import { BookDetailsProps } from "@/types";
 
 const BookDetails = ({
   isOpen,

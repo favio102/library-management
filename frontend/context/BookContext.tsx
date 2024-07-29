@@ -8,14 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import { getBooks, createBook, updateBook as updateBookApi } from "@/utils/api";
-import { BookProps } from "@/types";
-
-interface BookContextProps {
-  books: BookProps[];
-  fetchBooks: () => Promise<void>;
-  addBook: (book: BookProps) => Promise<void>;
-  updateBook: (updatedBook: BookProps) => Promise<void>;
-}
+import { BookProps, BookContextProps } from "@/types";
 
 const BookContext = createContext<BookContextProps | undefined>(undefined);
 
