@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -33,6 +34,12 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	// Get the frontend URL from environment variable
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		log.Fatal("FRONTEND_URL environment variable not set")
+	}
+
 	// Initialize the database connection
 	client := config.ConnectDB()
 
@@ -44,7 +51,7 @@ func main() {
 
 	// Configure CORS
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000"}, // Allow your frontend URL
+		AllowedOrigins: []string{frontendURL}, // Allow frontend URL
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type"},
 	})
