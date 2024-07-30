@@ -6,10 +6,9 @@ import {
   Transition,
   TransitionChild,
   DialogPanel,
-  DialogTitle,
 } from "@headlessui/react";
 import Form from "./Form";
-import { getBookById, updateBook as updateBookApi } from "@/utils/api";
+import { getBookById } from "@/utils/api";
 import { BookDetailsProps } from "@/types";
 
 const BookDetails = ({

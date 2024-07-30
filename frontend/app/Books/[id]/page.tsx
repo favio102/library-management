@@ -60,7 +60,6 @@ const BookPage = () => {
             width={160}
             height={30}
             className="content-center"
-            // style={{ width: "auto", height: "auto" }}
           />
         </div>
         <div className="flex flex-col w-full md:w-3/4 p-4">
