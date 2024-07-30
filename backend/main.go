@@ -55,6 +55,13 @@ func main() {
 	// Register routes and pass the database client
 	routes.RegisterBookRoutes(router, client)
 
+	// Custom route for server status
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`<html><body><h1>Server is running!</h1></body></html>`))
+	})
+
 	// Configure CORS
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{frontendURL}, // Allow frontend URL
@@ -68,7 +75,14 @@ func main() {
 	// Add Swagger endpoint
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
+	// Custom 404 handler
+	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Custom 404 - Page Not Found", http.StatusNotFound)
+	})
+
 	// Start the server
-	log.Printf("Starting server on :%s...\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+	log.Printf("Server is running and listening on port %s...\n", port)
+	if err := http.ListenAndServe(":"+port, handler); err != nil {
+		log.Fatalf("Could not start server: %s\n", err.Error())
+	}
 }
