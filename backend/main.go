@@ -40,6 +40,12 @@ func main() {
 		log.Fatal("FRONTEND_URL environment variable not set")
 	}
 
+	// Get the port from the environment variable or default to 8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port for local development
+	}
+
 	// Initialize the database connection
 	client := config.ConnectDB()
 
@@ -62,6 +68,7 @@ func main() {
 	// Add Swagger endpoint
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
-	log.Println("Starting server on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	// Start the server
+	log.Printf("Starting server on :%s...\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
