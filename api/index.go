@@ -11,7 +11,7 @@ import (
   "library-management/routes"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+export func Handler(w http.ResponseWriter, r *http.Request) {
   // Load environment variables
   err := config.LoadEnv()
   if err != nil {
