@@ -39,13 +39,13 @@ frontend/next-env.d.ts
 
 
 # Node modules
-backend/node_modules/
+api/node_modules/
 
 # Log files
-backend/logs/
+api/logs/
 *.log
 
 # Environment variables
-backend/.env
+api/.env
 
 .DS_Store
