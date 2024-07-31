@@ -20,7 +20,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
   // Get the frontend URL from environment variable
   frontendURL := os.Getenv("FRONTEND_URL")
-  if (frontendURL == "") {
+  if frontendURL == "" {
     log.Fatal("FRONTEND_URL environment variable not set")
   }
 
@@ -52,4 +52,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
   // Serve HTTP requests using the router
   handler.ServeHTTP(w, r)
+}
+
+func main() {
+  http.HandleFunc("/", Handler)
+  port := os.Getenv("PORT")
+  if port == "" {
+    port = "8080"
+  }
+  log.Printf("Listening on port %s...\n", port)
+  if err := http.ListenAndServe(":"+port, nil); err != nil {
+    log.Fatalf("Could not start server: %s\n", err.Error())
+  }
 }
