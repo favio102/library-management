@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
   "fmt"
@@ -21,14 +21,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
   // Get the frontend URL from environment variable
   frontendURL := os.Getenv("FRONTEND_URL")
-  if frontendURL == "" {
+  if (frontendURL == "") {
     log.Fatal("FRONTEND_URL environment variable not set")
-  }
-
-  // Get the port from the environment variable or default to 8080
-  port := os.Getenv("PORT")
-  if port == "" {
-    port = "8080" // Default port for local development
   }
 
   // Initialize the database connection
