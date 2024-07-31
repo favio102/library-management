@@ -3,13 +3,16 @@
   "builds": [
     {
       "src": "backend/main.go",
-      "use": "@vercel/go"
+      "use": "@vercel/go",
+      "config": {
+        "buildCommand": "go build -o main backend/main.go"
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "backend/main.go"
+      "dest": "main"
     }
   ]
 }
