@@ -27,42 +27,25 @@ import (
 
 // @host localhost:8080
 // @BasePath /
-func main() {
-	// Load environment variables
-	err := config.LoadEnv()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	// Get the frontend URL from environment variable
-	frontendURL := os.Getenv("FRONTEND_URL")
-	if frontendURL == "" {
-		log.Fatal("FRONTEND_URL environment variable not set")
-	}
-
-	// Get the port from the environment variable or default to 8080
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080" // Default port for local development
-	}
-
-	// Initialize the database connection
-	client := config.ConnectDB()
-
+func createRouter() http.Handler {
 	// Initialize the router
 	router := mux.NewRouter()
 
 	// Register routes and pass the database client
+	client := config.ConnectDB()
 	routes.RegisterBookRoutes(router, client)
 
 	// Custom route for server status
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`<html><body><h1>Server is running!</h1></body></html>`))
+		if _, err := w.Write([]byte(`<html><body><h1>Server is running!</h1></body></html>`)); err != nil {
+			log.Println("Error writing response:", err)
+		}
 	})
 
 	// Configure CORS
+	frontendURL := os.Getenv("FRONTEND_URL")
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{frontendURL}, // Allow frontend URL
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -79,6 +62,25 @@ func main() {
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Custom 404 - Page Not Found", http.StatusNotFound)
 	})
+
+	return handler
+}
+
+func main() {
+	// Load environment variables
+	err := config.LoadEnv()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Get the port from the environment variable or default to 8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	// Create the router and wrap it with CORS middleware
+	handler := createRouter()
 
 	// Start the server
 	log.Printf("Server is running and listening on port %s...\n", port)

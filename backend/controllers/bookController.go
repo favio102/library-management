@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -12,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"library-management/models"
-	"log"
 )
 
 // BookController struct
@@ -73,7 +73,10 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(books)
+	if err := json.NewEncoder(w).Encode(books); err != nil {
+		log.Println("Error encoding books to JSON:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // GetBook retrieves a single book by ID
@@ -107,7 +110,10 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(book)
+	if err := json.NewEncoder(w).Encode(book); err != nil {
+		log.Println("Error encoding book to JSON:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // CreateBook creates a new book with a unique ID
@@ -148,7 +154,10 @@ func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(book)
+	if err := json.NewEncoder(w).Encode(book); err != nil {
+		log.Println("Error encoding book to JSON:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // UpdateBook updates an existing book by ID
@@ -201,7 +210,10 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(book)
+	if err := json.NewEncoder(w).Encode(book); err != nil {
+		log.Println("Error encoding book to JSON:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // DeleteBook deletes a book by ID
@@ -234,5 +246,9 @@ func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode("Book deleted")
+	response := "Book deleted"
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Println("Error encoding response to JSON:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
