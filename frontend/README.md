@@ -12,38 +12,49 @@ This directory contains the Next.js application for the Library Management Syste
    npm install
    ```
 
-2. **Run Development Server:**
+2. **Set up Env Files**
+   Under /Frontend create a .env file a set the following:
+
+   ```
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+   ```
+
+3. **Run Development Server:**
 
    ```bash
    npm run dev
    ```
 
-3. **Build the Application::**
+4. **Build the Application::**
    ```bash
    npm run build
    ```
 
 ## Directory Structure
 
-* app/: 
-   
+- app/:
+
       Contains Next.js pages and layout components.
 
-* components/: 
+- components/:
 
       Contains reusable React components.
-* public/:
-      
+
+- public/:
+  
       Static assets like images.
-* utils/:
-      
+
+- utils/:
+  
       Utility functions and API helpers.
 
 <!-- ## Running Tests
    ```
    npm run test
    ``` -->
+
 # Screenshots
+
    <!-- Include frontend-specific screenshots here. -->
 <img width="1158" alt="Screenshot 2024-07-29 at 7 54 46 AM" src="https://github.com/user-attachments/assets/f7222689-7e4b-42b6-9fa8-8669e6d9e599">
 
@@ -52,15 +63,7 @@ This directory contains the Next.js application for the Library Management Syste
 
 <img width="1178" alt="Screenshot 2024-07-29 at 8 03 36 AM" src="https://github.com/user-attachments/assets/fcdef878-8bfd-4cdc-acb7-db926cd5c8b2">
 
-
-
-
-
-
-
-
-   
-
 # Additional Notes
- - Adjust configurations in next.config.mjs as needed.
- - Refer to the backend README.md for details on API endpoints and integration.
+
+- Adjust configurations in next.config.mjs as needed.
+- Refer to the backend README.md for details on API endpoints and integration.
