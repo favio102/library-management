@@ -34,7 +34,7 @@ const BookDetails = ({
       };
       fetchBook();
     }
-  }, [isEditing, bookId]);
+  }, [isEditing, bookId, setBook]);
 
   const handleSubmit = async () => {
     try {

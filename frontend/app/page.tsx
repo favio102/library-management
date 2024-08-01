@@ -59,7 +59,7 @@ export default function Home() {
       }
     };
     loadBooks();
-  }, []);
+  }, [fetchBooks]);
 
   const filteredBooks = books.filter((book) => {
     const query = searchQuery.toLocaleLowerCase();

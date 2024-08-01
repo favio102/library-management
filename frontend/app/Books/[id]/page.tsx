@@ -29,14 +29,14 @@ const BookPage = () => {
     }
   }, [id, books]);
 
-  const handleUpdateBook = async (updatedBook: BookProps) => {
-    try {
-      await updateBook(updatedBook);
-      router.push(`/books/${updatedBook.id}`);
-    } catch (error) {
-      console.error("Failed to update book", error);
-    }
-  };
+  // const handleUpdateBook = async (updatedBook: BookProps) => {
+  //   try {
+  //     await updateBook(updatedBook);
+  //     router.push(`/books/${updatedBook.id}`);
+  //   } catch (error) {
+  //     console.error("Failed to update book", error);
+  //   }
+  // };
 
   if (isLoading) {
     return <p>Loading...</p>;
