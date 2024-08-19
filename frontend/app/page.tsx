@@ -59,7 +59,7 @@ export default function Home() {
       }
     };
     loadBooks();
-  }, [fetchBooks]);
+  }, []);
 
   const filteredBooks = books.filter((book) => {
     const query = searchQuery.toLocaleLowerCase();
@@ -100,7 +100,6 @@ export default function Home() {
           isOpen={isOpen}
           closeModal={() => {
             setIsOpen(false);
-            fetchBooks();
           }}
           isEditing={isEditing}
           bookId={bookId}

@@ -46,6 +46,7 @@ func createRouter() http.Handler {
 
 	// Configure CORS
 	frontendURL := os.Getenv("FRONTEND_URL")
+	log.Printf("Frontend URL allowed for CORS: %s\n", frontendURL)
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{frontendURL}, // Allow frontend URL
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

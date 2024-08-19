@@ -29,6 +29,27 @@ const BookPage = () => {
     }
   }, [id, books]);
 
+  // useEffect(() => {
+  //   if (typeof id === "string") {
+  //     const fetchBook = async () => {
+  //       try {
+  //         const bookData = await getBookById(id);
+  //         console.log(bookData)
+  //         setBook(bookData);
+  //       } catch (error) {
+  //         setIsError(true);
+  //         console.error("Failed to fetch book", error);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
+  //     fetchBook();
+  //   } else {
+  //     setIsError(true);
+  //     setIsLoading(false);
+  //   }
+  // }, [id]);
+
   // const handleUpdateBook = async (updatedBook: BookProps) => {
   //   try {
   //     await updateBook(updatedBook);

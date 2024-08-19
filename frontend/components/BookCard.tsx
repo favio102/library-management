@@ -7,7 +7,7 @@ import Link from "next/link";
 import { BookCardProps } from "@/types";
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
-  useEffect(() => {}, [book]);
+  // useEffect(() => {}, [book]);
   return (
     <div className="book-card group">
       <div className="relative w-full h-40 my-3 flex justify-center items-center">
