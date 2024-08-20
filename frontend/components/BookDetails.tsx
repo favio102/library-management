@@ -10,6 +10,7 @@ import {
 import Form from "./Form";
 import { getBookById } from "@/utils/api";
 import { BookDetailsProps } from "@/types";
+import toast from "react-hot-toast";
 
 const BookDetails = ({
   isOpen,
@@ -41,13 +42,16 @@ const BookDetails = ({
       if (isEditing) {
         if (bookId) {
           await onUpdateBook(book);
+          toast.success("Book update successfully!");
         }
       } else {
         await onAddBook(book);
+        toast.success("Book added successfully!");
       }
       closeModal();
     } catch (error) {
       console.error("Failed to submit book", error);
+      toast.error("Failed to submit book. Please try again.");
     }
   };
 

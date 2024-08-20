@@ -59,6 +59,7 @@ const NavBar = () => {
       if (confirmed) {
         try {
           await deleteBook(id);
+          toast.error("Book was delete successfully!");
           await fetchBooks();
           router.push("/");
         } catch (error) {
