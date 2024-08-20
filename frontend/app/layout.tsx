@@ -1,10 +1,14 @@
+"use client";
+
 import type { Metadata } from "next";
 import { BookProvider } from "@/context/BookContext";
 import "./globals.css";
 import { Navbar, Footer } from "@/components";
 import { Toaster } from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
-export const metadata: Metadata = {
+
+const metadata: Metadata = {
   title: "Library Management",
   description: "Library Management",
 };
@@ -14,6 +18,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
   return (
     <BookProvider>
       <html lang="en">
@@ -29,7 +34,7 @@ export default function RootLayout({
             }}
             reverseOrder={false}
           />
-          <Footer />
+          {pathname === "/" && <Footer />}
         </body>
       </html>
     </BookProvider>
