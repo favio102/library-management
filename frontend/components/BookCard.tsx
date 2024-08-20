@@ -12,7 +12,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
     <div className="book-card group">
       <div className="relative w-full h-40 my-3 flex justify-center items-center">
         <Image
-          src="/book.jpeg"
+          src="/book-cover.png"
           alt="book"
           width={100}
           height={50}

@@ -8,6 +8,7 @@ import BookDetails from "./BookDetails";
 import CustomButton from "./CustomButton";
 import { BookProps } from "@/types";
 import { deleteBook } from "@/utils/api";
+import toast from "react-hot-toast";
 
 const NavBar = () => {
   const { fetchBooks, addBook, updateBook } = useBooks();
@@ -58,6 +59,7 @@ const NavBar = () => {
       if (confirmed) {
         try {
           await deleteBook(id);
+          toast.error("Book was delete successfully!");
           await fetchBooks();
           router.push("/");
         } catch (error) {
@@ -79,7 +81,7 @@ const NavBar = () => {
         {isBookPage ? (
           <>
             <CustomButton
-              title='⫷ ❌ ⫸ Delete Book'
+              title="⫷ ❌ ⫸ Delete Book"
               btnType="button"
               handleClick={handleDelete}
               containerStyles="text-black rounded-lg bg-white hover:bg-red-200 hover:text-red-800 hover:font-bold min-w-[130px] me-6 border dark:border-red-200"

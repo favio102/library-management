@@ -76,7 +76,7 @@ const BookPage = () => {
       <div className="flex flex-col md:flex-row gap-2 md:gap-6 w-full">
         <div className="bg-gray-100 w-full md:w-1/4 rounded-2xl flex justify-center items-center">
           <Image
-            src="/book.jpeg"
+            src="/book-cover.png"
             alt="book"
             width={160}
             height={30}
