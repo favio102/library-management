@@ -1,12 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomButton, CustomInput } from "@/components";
 import { FormProps } from "@/types";
+import ImageUploader from "./ImageUploader";
+import toast from "react-hot-toast";
 
 const Form = ({ book, setBook, onSubmit }: FormProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBook({ ...book, [e.target.name]: e.target.value });
+  };
+  const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
+  useEffect(() => {}, []);
+
+  const handleOnDrop = (files: File[]) => {
+    if (FileSystem.length > 1) {
+      toast("You can upload up to 1 image.");
+      return;
+    }
+    setAcceptedFiles(files);
   };
 
   return (
@@ -107,6 +119,7 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
             required
           />
         </div>
+        <ImageUploader files={acceptedFiles} handleOnDrop={handleOnDrop} />
         <CustomButton
           title="Submit"
           btnType="submit"

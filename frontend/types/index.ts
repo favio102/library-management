@@ -75,3 +75,8 @@ export interface BookContextProps {
   addBook: (book: BookProps) => Promise<void>;
   updateBook: (updatedBook: BookProps) => Promise<void>;
 }
+
+export interface ImageUploaderProps {
+  files: File[];
+  handleOnDrop: (acceptedFiles: File[]) => void;
+}
