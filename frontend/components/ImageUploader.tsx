@@ -13,8 +13,8 @@ const ImageUploader = ({ handleOnDrop, files }: ImageUploaderProps) => {
         <div className="mt-2">
           <div {...getRootProps()}>
             <input {...getInputProps()} accept="image/*" />
-            <h1 className="font-bold">Upload Images</h1>
-            <div className="w-full h-fit min-h-[150px] md:min-h-[280px] border border-dashed border-gray-400 rounded-lg p-2 mt-3 flex flex-col items-center justify-center bg-[#f5f8ff] dark:bg-gradient-radial from-slate-700 to-slate-900 dark:text-slate-300  dark:border-zinc-600  pt-6">
+            <h1 className="font-bold">Upload Image</h1>
+            <div className="w-full h-fit min-h-[150px] md:min-h-[180px] border border-dashed border-gray-400 rounded-lg p-2 mt-3 flex flex-col items-center justify-center bg-[#f5f8ff] dark:bg-gradient-radial from-slate-700 to-slate-900 dark:text-slate-300  dark:border-zinc-600 pt-6 cursor-pointer">
               <RiUpload2Line
                 size={26}
                 className={`${
@@ -41,7 +41,7 @@ const ImageUploader = ({ handleOnDrop, files }: ImageUploaderProps) => {
                   ))}
                 </ul>
               )}
-              {files.length === 0 && (
+              {/* {files.length === 0 && (
                 <ul className="mt-2 flex items-center gap-3 flex-wrap">
                   <li key="test">
                     <Image
@@ -53,7 +53,7 @@ const ImageUploader = ({ handleOnDrop, files }: ImageUploaderProps) => {
                     />
                   </li>
                 </ul>
-              )}
+              )} */}
             </div>
           </div>
         </div>

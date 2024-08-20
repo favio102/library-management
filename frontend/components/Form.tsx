@@ -35,9 +35,9 @@ const Form = ({ book, setBook, onSubmit }: FormProps) => {
       <div className="flex flex-col gap-6 md:gap-7">
         <div className="flex flex-col items-center w-full gap-1 md:gap-4">
           <CustomInput
-            label="Title Book"
+            label="Title"
             name="title"
-            placeholder="Book Title"
+            placeholder="Title"
             value={book.title}
             onChange={handleChange}
             required
