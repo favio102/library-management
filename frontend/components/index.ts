@@ -7,6 +7,7 @@ import BookCard from "./BookCard";
 import BookDetails from "./BookDetails";
 import Form from "./Form";
 import CustomInput from "./CustomInput";
+import BookCardSkeleton from "./BookCardSkeleton";
 
 export {
   Hero,
@@ -18,4 +19,5 @@ export {
   BookDetails,
   Form,
   CustomInput,
+  BookCardSkeleton,
 };

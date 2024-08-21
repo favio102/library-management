@@ -2,11 +2,16 @@
 
 import Image from "next/image";
 import Hero from "@/components/Hero";
-import { BookCard, BookDetails, CustomButton, SearchBar } from "@/components";
+import {
+  BookCard,
+  BookDetails,
+  CustomButton,
+  SearchBar,
+  BookCardSkeleton,
+} from "@/components";
 import { useBooks } from "@/context/BookContext";
 import { useEffect, useState } from "react";
 import { BookProps } from "@/types";
-import BookCardSkeleton from "@/components/BookCardSkeleton";
 
 export default function Home() {
   const { books, fetchBooks, addBook, updateBook } = useBooks();
@@ -16,6 +21,7 @@ export default function Home() {
   const [bookId, setBookId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleBooksCount, setVisibleBooksCount] = useState(8);
   const [book, setBook] = useState<BookProps>({
     id: "",
     title: "",
@@ -71,6 +77,10 @@ export default function Home() {
     );
   });
 
+  const handleClick = () => {
+    setVisibleBooksCount((prevCount) => prevCount + 8);
+  };
+
   return (
     <main className="overflow-hidden">
       <Hero />
@@ -123,7 +133,7 @@ export default function Home() {
         ) : filteredBooks.length > 0 ? (
           <section>
             <div className="home__books-wrapper">
-              {filteredBooks.map((book) => (
+              {filteredBooks.slice(0, visibleBooksCount).map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
             </div>
@@ -134,6 +144,14 @@ export default function Home() {
           </div>
         )}
       </div>
+      {visibleBooksCount < filteredBooks.length && (
+        <CustomButton
+          title="Show More"
+          btnType="button"
+          containerStyles="bg-white hover:bg-blue-700 text-black hover:text-white hover:font-bold rounded-lg mt-10 border dark:border-blue-600 mx-auto"
+          handleClick={handleClick}
+        />
+      )}
     </main>
   );
 }
