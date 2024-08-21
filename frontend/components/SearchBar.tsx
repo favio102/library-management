@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <input
           type="text"
           placeholder="Search by title, author, year of publication, subject ..."
-          className="text-gray-400 flex-1 outline-none pl-4 text-ms bg-transparent"
+          className="text-normal flex-1 outline-none pl-4 text-ms bg-transparent"
           value={searchQuery}
           onChange={handleSearchChange}
         />
