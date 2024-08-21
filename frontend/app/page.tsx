@@ -6,6 +6,7 @@ import { BookCard, BookDetails, CustomButton, SearchBar } from "@/components";
 import { useBooks } from "@/context/BookContext";
 import { useEffect, useState } from "react";
 import { BookProps } from "@/types";
+import BookCardSkeleton from "@/components/BookCardSkeleton";
 
 export default function Home() {
   const { books, fetchBooks, addBook, updateBook } = useBooks();
@@ -110,7 +111,13 @@ export default function Home() {
         />
 
         {isLoading ? (
-          <p>Loading...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
+            {Array(8)
+              .fill(0)
+              .map((_, i) => (
+                <BookCardSkeleton key={i} />
+              ))}
+          </div>
         ) : isError ? (
           <p>Error loading books.</p>
         ) : filteredBooks.length > 0 ? (
