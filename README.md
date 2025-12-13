@@ -194,13 +194,28 @@ library-management/
    go run main.go
    ```
    The service will start at `http://localhost:8080`
-   
-   **Note**: The URL service uses port 8080 by default, same as the backend. If running both services simultaneously, modify the backend's port using the `PORT` environment variable or modify the url-service source code to use a different port.
 
 5. **Run tests:**
    ```bash
    go test ./...
    ```
+
+### Important: Port Configuration
+
+⚠️ **Both the backend and url-service use port 8080 by default and cannot run simultaneously without configuration changes.**
+
+**Recommended approach:**
+- For the **Library Management Application** (frontend + backend), use the default backend port 8080
+- For the **URL Service** (standalone), use port 8080 when running it independently
+- To run both services together, configure the backend to use a different port via the `PORT` environment variable:
+  ```bash
+  cd backend
+  PORT=8081 go run main.go
+  ```
+  Then update the frontend's `.env` file:
+  ```env
+  NEXT_PUBLIC_API_BASE_URL=http://localhost:8081
+  ```
 
 ## API Documentation
 
@@ -282,10 +297,10 @@ curl -X DELETE http://localhost:8080/books/{id}
 ### Swagger Documentation
 
 Interactive API documentation is available at:
-- **Backend API**: `http://localhost:8080/swagger/index.html` (or your configured PORT)
-- **URL Service**: `http://localhost:8080/swagger/index.html` (when running standalone)
+- **Backend API**: `http://localhost:{PORT}/swagger/index.html` (default: 8080)
+- **URL Service**: `http://localhost:8080/swagger/index.html`
 
-**Note**: Both services cannot run on the same port simultaneously. Configure the backend to use a different port via the `PORT` environment variable if running both services together.
+See the [Port Configuration](#important-port-configuration) section for details on running both services.
 
 The Swagger UI allows you to:
 - View all available endpoints
@@ -415,18 +430,30 @@ Tests include:
 
 **For Library Management Application:**
 1. **Start MongoDB** (if running locally)
-2. **Start Backend**: `cd backend && go run main.go` (runs on port 8080)
-3. **Start Frontend**: `cd frontend && npm run dev` (runs on port 3000)
+2. **Start Backend**: 
+   ```bash
+   cd backend
+   go run main.go
+   ```
+   Backend runs on port 8080 (default) or your configured PORT
+3. **Start Frontend**: 
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+   Frontend runs on port 3000
 4. **Access Application**: `http://localhost:3000`
 
 **For URL Service (standalone):**
-1. **Start URL Service**: `cd url-service && go run main.go` (runs on port 8080)
+1. **Start URL Service**: 
+   ```bash
+   cd url-service
+   go run main.go
+   ```
+   Service runs on port 8080
 2. **Access Swagger**: `http://localhost:8080/swagger/index.html`
 
-**Note**: The backend and url-service cannot run simultaneously on the same port. If you need both services running, configure the backend to use a different port by setting the `PORT` environment variable:
-```bash
-PORT=8081 go run main.go
-```
+See the [Port Configuration](#important-port-configuration) section for running both services simultaneously.
 
 ### Linting
 
