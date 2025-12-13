@@ -204,6 +204,10 @@ library-management/
 
 ⚠️ **Both the backend and url-service use port 8080 by default and cannot run simultaneously without configuration changes.**
 
+**Port Configuration Details:**
+- **Backend**: Configurable via `PORT` environment variable (default: 8080)
+- **URL Service**: Hardcoded to port 8080 (requires source code modification to change)
+
 **Recommended approach:**
 - For the **Library Management Application** (frontend + backend), use the default backend port 8080
 - For the **URL Service** (standalone), use port 8080 when running it independently
@@ -216,6 +220,8 @@ library-management/
   ```env
   NEXT_PUBLIC_API_BASE_URL=http://localhost:8081
   ```
+  
+  Note: The URL service port cannot be changed via environment variables and requires modifying `url-service/main.go` line 25.
 
 ## API Documentation
 
@@ -227,6 +233,7 @@ The backend provides a RESTful API for managing books:
 ```
 http://localhost:8080
 ```
+(Default port 8080, configurable via `PORT` environment variable. See [Port Configuration](#important-port-configuration))
 
 #### Endpoints
 
@@ -297,10 +304,10 @@ curl -X DELETE http://localhost:8080/books/{id}
 ### Swagger Documentation
 
 Interactive API documentation is available at:
-- **Backend API**: `http://localhost:{PORT}/swagger/index.html` (default: 8080)
-- **URL Service**: `http://localhost:8080/swagger/index.html`
+- **Backend API**: `http://localhost:{PORT}/swagger/index.html` (default: 8080, configurable)
+- **URL Service**: `http://localhost:8080/swagger/index.html` (hardcoded port)
 
-See the [Port Configuration](#important-port-configuration) section for details on running both services.
+See the [Port Configuration](#important-port-configuration) section for details on running both services and port configuration options.
 
 The Swagger UI allows you to:
 - View all available endpoints
