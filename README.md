@@ -502,10 +502,16 @@ For visual examples of the application, please refer to:
 - [Backend README](./backend/README.md) for API documentation screenshots
 - [URL Service README](./url-service/README.md) for service screenshots
 
-## Contributing
+### 🤝 Contributing
 
-For issues or feature requests, please refer to the project's GitHub repository.
+We welcome contributions from the community! To ensure a smooth process, please follow these basic steps:
 
+1.  **Open an Issue:** For bug reports or feature suggestions, please first open an [Issue]($$LINK\_TO\_ISSUES$$) to discuss your proposed change or problem.
+2.  **Fork the Repository:** Create your own fork of the project.
+3.  **Implement Fixes:** Create a new branch (`git checkout -b feature/your-feature-name` or `git checkout -b fix/issue-number`) and implement your changes.
+4.  **Submit a Pull Request (PR):** Target the `main` branch with your pull request, ensuring your branch is up-to-date and all tests pass.
+
+---
 ## License
 
 This project is available for educational and personal use.
