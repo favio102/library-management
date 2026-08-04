@@ -13,9 +13,15 @@ const baseUrl = () => {
   return url.replace(/\/$/, "");
 };
 
+/* A hung socket — laptop woke from sleep, API is gone, Atlas is re-electing —
+ * would otherwise leave the request pending forever and the UI stuck on
+ * skeletons. Fail fast enough to show a retry instead. */
+const TIMEOUT_MS = 12000;
+
 const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(`${baseUrl()}${path}`, {
     ...init,
+    signal: init?.signal ?? AbortSignal.timeout(TIMEOUT_MS),
     headers: init?.body
       ? { "Content-Type": "application/json", ...init?.headers }
       : init?.headers,

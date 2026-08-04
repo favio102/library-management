@@ -19,6 +19,7 @@ import {
 } from "@/components";
 import { useBooks } from "@/context/BookContext";
 import { getBookById } from "@/utils/api";
+import { SAMPLE_PREFIX } from "@/constants";
 import { BookProps } from "@/types";
 
 const SPEC_FIELDS: { key: keyof BookProps; label: string }[] = [
@@ -72,6 +73,7 @@ const BookPage = () => {
   }, [id, contextBook, status, leaving]);
 
   const book = contextBook ?? fetched;
+  const isSample = Boolean(book?.id.startsWith(SAMPLE_PREFIX));
 
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState<BookProps | null>(null);
@@ -93,7 +95,9 @@ const BookPage = () => {
     </Link>
   );
 
-  if (status === "error") {
+  /* Guarded on `!book` so a sample row still opens while the API is down —
+     without it, every offline record dead-ends here. */
+  if (status === "error" && !book) {
     return (
       <div className="shell">
         <EmptyState
@@ -175,23 +179,39 @@ const BookPage = () => {
             })}
           </dl>
 
-          <div className="record__actions">
-            <CustomButton
-              title="Edit record"
-              tone="quiet"
-              icon={<RiPencilLine size={15} />}
-              handleClick={() => {
-                setDraft(book);
-                setIsEditing(true);
-              }}
-            />
-            <CustomButton
-              title="Remove from shelf"
-              tone="danger"
-              icon={<RiDeleteBinLine size={15} />}
-              handleClick={() => setConfirmingRemove(true)}
-            />
-          </div>
+          {/* Sample rows exist only because the API is down — there is nothing
+              on the server to edit or delete, so the actions are withheld. */}
+          {isSample ? (
+            <div className="notice" role="alert">
+              <p className="notice__head">
+                <RiCloudOffLine size={17} aria-hidden="true" />
+                Sample record
+              </p>
+              <p className="notice__body">
+                This is placeholder data shown because the catalogue API is not
+                responding. It does not exist in the database and cannot be
+                edited or removed.
+              </p>
+            </div>
+          ) : (
+            <div className="record__actions">
+              <CustomButton
+                title="Edit record"
+                tone="quiet"
+                icon={<RiPencilLine size={15} />}
+                handleClick={() => {
+                  setDraft(book);
+                  setIsEditing(true);
+                }}
+              />
+              <CustomButton
+                title="Remove from shelf"
+                tone="danger"
+                icon={<RiDeleteBinLine size={15} />}
+                handleClick={() => setConfirmingRemove(true)}
+              />
+            </div>
+          )}
         </div>
       </article>
 

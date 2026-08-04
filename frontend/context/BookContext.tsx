@@ -17,6 +17,7 @@ import {
   deleteBook as deleteBookApi,
   deleteBookOnUnload,
 } from "@/utils/api";
+import { fallbackBooks } from "@/constants";
 import { BookProps, BookContextProps, LoadStatus } from "@/types";
 
 const BookContext = createContext<BookContextProps | undefined>(undefined);
@@ -41,25 +42,74 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
     new Map<string, ReturnType<typeof setTimeout>>()
   );
 
-  const fetchBooks = useCallback(async () => {
-    setStatus("loading");
-    setError(null);
-    try {
-      const fetched = await getBooks();
-      setBooks(Array.isArray(fetched) ? fetched : []);
-      setStatus("ready");
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "The catalogue could not be reached."
-      );
-      setStatus("error");
-    }
-  }, []);
+  const lastFetchedAt = useRef(0);
+
+  /* `background: true` re-syncs without tearing the shelf down to skeletons —
+   * used by the focus/online listeners below. A failed background refresh
+   * keeps whatever is already on screen rather than replacing good data with
+   * an error page. */
+  const fetchBooks = useCallback(
+    async ({ background = false }: { background?: boolean } = {}) => {
+      if (!background) {
+        setStatus("loading");
+        setError(null);
+      }
+      try {
+        const fetched = await getBooks();
+        setBooks(Array.isArray(fetched) ? fetched : []);
+        setStatus("ready");
+        setError(null);
+        lastFetchedAt.current = Date.now();
+      } catch (cause) {
+        const message =
+          cause instanceof Error
+            ? cause.message
+            : "The catalogue could not be reached.";
+        if (background) {
+          /* Silent — the user still has the last good copy in front of them. */
+          console.warn("[catalogue] background refresh failed:", message);
+          return;
+        }
+        /* Fall back to sample rows so a dead API renders something
+         * diagnosable instead of skeletons that never resolve. The UI flags
+         * them and blocks writes — see SAMPLE_PREFIX. */
+        setBooks(fallbackBooks);
+        setError(message);
+        setStatus("error");
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     fetchBooks();
+  }, [fetchBooks]);
+
+  /* Re-sync when the user comes back to the tab or the network returns.
+   * Without this the catalogue is only ever as fresh as the moment the page
+   * was opened — leave it open overnight and it still shows yesterday's shelf,
+   * or stays stuck on an error from a backend that has since come back up. */
+  useEffect(() => {
+    const STALE_AFTER = 30_000;
+
+    const resync = (force = false) => {
+      if (document.visibilityState !== "visible") return;
+      if (!force && Date.now() - lastFetchedAt.current < STALE_AFTER) return;
+      fetchBooks({ background: lastFetchedAt.current > 0 });
+    };
+
+    const onVisibility = () => resync();
+    const onOnline = () => resync(true);
+
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("focus", onVisibility);
+    window.addEventListener("online", onOnline);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("focus", onVisibility);
+      window.removeEventListener("online", onOnline);
+    };
   }, [fetchBooks]);
 
   /* If the tab closes mid-Undo, send the held deletes rather than dropping

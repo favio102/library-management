@@ -16,16 +16,20 @@ const Navbar = () => {
   const { books, status } = useBooks();
   const isRecord = /^\/books\/[^/]+$/.test(pathname);
 
+  /* Never report a count while the shelf is showing sample rows — the figure
+     would read as real holdings. */
   const count =
     status === "ready"
-      ? `${books.length} ${books.length === 1 ? "book" : "books"}`
-      : "Loading…";
+      ? `${books.length} ${books.length === 1 ? "book" : "books"} on the shelf`
+      : status === "error"
+        ? "Catalogue unavailable"
+        : "Loading…";
 
   return (
     <header className={`mast ${isRecord ? "mast--compact" : ""}`.trim()}>
       <div className="shell">
         <p className="mast__line">
-          <span className="mast__edition">{count} on the shelf</span>
+          <span className="mast__edition">{count}</span>
           <ThemeToggle />
         </p>
 

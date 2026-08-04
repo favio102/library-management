@@ -98,21 +98,32 @@ export default function Home() {
           )}
 
           {status === "error" && (
-            <EmptyState
-              mark={<RiCloudOffLine size={18} />}
-              title="The catalogue could not be reached."
-              body={
-                error ??
-                "The request to the books API did not come back. Check that the API is running, then load the shelf again."
-              }
-              action={
+            <div className="notice" role="alert">
+              <p className="notice__head">
+                <RiCloudOffLine size={17} aria-hidden="true" />
+                The catalogue API is not responding
+              </p>
+              <p className="notice__body">
+                The books below are <b>sample rows</b>, not your data — they are
+                shown so the page stays usable while you fix the backend. They
+                cannot be edited or removed.
+              </p>
+              <p className="notice__body">
+                <code>{error ?? "No response from the books endpoint."}</code>
+              </p>
+              <p className="notice__body">
+                Check that the API is running on{" "}
+                <code>{process.env.NEXT_PUBLIC_API_BASE_URL}</code> —{" "}
+                <code>cd backend &amp;&amp; go run main.go</code>
+              </p>
+              <div className="notice__actions">
                 <CustomButton
                   title="Try again"
                   tone="quiet"
                   handleClick={() => fetchBooks()}
                 />
-              }
-            />
+              </div>
+            </div>
           )}
 
           {status === "ready" && books.length === 0 && (
@@ -146,7 +157,8 @@ export default function Home() {
             />
           )}
 
-          {status === "ready" && visible.length > 0 && (
+          {/* Also renders on `error`, where `visible` holds the sample rows. */}
+          {status !== "loading" && visible.length > 0 && (
             <>
               <div className="catalogue">
                 {visible.map((book) => (

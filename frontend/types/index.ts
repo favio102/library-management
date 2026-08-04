@@ -89,7 +89,8 @@ export interface BookContextProps {
   books: BookProps[];
   status: LoadStatus;
   error: string | null;
-  fetchBooks: () => Promise<void>;
+  /** `background: true` re-syncs without dropping the shelf to skeletons. */
+  fetchBooks: (options?: { background?: boolean }) => Promise<void>;
   addBook: (book: BookProps) => Promise<void>;
   updateBook: (updatedBook: BookProps) => Promise<void>;
   /** Optimistic delete. The request is held open for the Undo window. */
