@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RiAddLine, RiBookLine, RiCloudOffLine, RiSearchLine } from "react-icons/ri";
+import { RiAddLine, RiBookLine, RiSearchLine } from "react-icons/ri";
 import {
   BookCard,
   BookCardSkeleton,
@@ -30,7 +30,7 @@ const blankBook: BookProps = {
 };
 
 export default function Home() {
-  const { books, status, error, fetchBooks, addBook, updateBook } = useBooks();
+  const { books, status, addBook, updateBook } = useBooks();
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,35 +94,6 @@ export default function Home() {
               {Array.from({ length: 8 }, (_, index) => (
                 <BookCardSkeleton key={`skeleton-${index}`} />
               ))}
-            </div>
-          )}
-
-          {status === "error" && (
-            <div className="notice" role="alert">
-              <p className="notice__head">
-                <RiCloudOffLine size={17} aria-hidden="true" />
-                The catalogue API is not responding
-              </p>
-              <p className="notice__body">
-                The books below are <b>sample rows</b>, not your data — they are
-                shown so the page stays usable while you fix the backend. They
-                cannot be edited or removed.
-              </p>
-              <p className="notice__body">
-                <code>{error ?? "No response from the books endpoint."}</code>
-              </p>
-              <p className="notice__body">
-                Check that the API is running on{" "}
-                <code>{process.env.NEXT_PUBLIC_API_BASE_URL}</code> —{" "}
-                <code>cd backend &amp;&amp; go run main.go</code>
-              </p>
-              <div className="notice__actions">
-                <CustomButton
-                  title="Try again"
-                  tone="quiet"
-                  handleClick={() => fetchBooks()}
-                />
-              </div>
             </div>
           )}
 
