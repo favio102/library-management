@@ -28,7 +28,7 @@ const ImageUploader = ({ handleOnDrop, files }: ImageUploaderProps) => {
               <p className="mt-1">High resolution images (.jpg,.png,.gif) </p>
               {files?.length !== 0 && (
                 <ul className="mt-2 flex items-center gap-3 flex-wrap">
-                  {files?.map((file, i) => (
+                  {files?.map((file: File, i: number) => (
                     <li key={i}>
                       <Image
                         src={URL.createObjectURL(file)}

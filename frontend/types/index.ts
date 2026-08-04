@@ -1,22 +1,36 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, ReactNode } from "react";
+
+export type ButtonTone = "primary" | "quiet" | "danger" | "type";
 
 export interface CustomButtonProps {
   title: string;
+  tone?: ButtonTone;
   containerStyles?: string;
   handleClick?: MouseEventHandler<HTMLButtonElement>;
   btnType?: "button" | "submit";
-  textStyles?: string;
-  rightIcon?: string;
+  disabled?: boolean;
+  loading?: boolean;
+  loadingTitle?: string;
+  icon?: ReactNode;
+  ariaLabel?: string;
 }
 
 export interface CustomInputProps {
   label: string;
   placeholder: string;
   name: string;
-  btnType?: "text" | "number" | "radio" | "number";
-  value?: string | number;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  required: boolean;
+  inputType?: "text" | "number";
+  multiline?: boolean;
+  value?: string;
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onBlur?: (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  required?: boolean;
+  error?: string;
+  help?: string;
 }
 
 export interface BookProps {
@@ -33,18 +47,14 @@ export interface BookProps {
 }
 
 export interface BookCardProps {
-  book: {
-    id: string;
-    title: string;
-    author: string;
-    year: string;
-    description?: string;
-    edition?: string;
-    language?: string;
-    subject?: string;
-    publisher?: string;
-    format?: string;
-  };
+  book: BookProps;
+}
+
+export interface BookCoverProps {
+  title: string;
+  author: string;
+  /** `lg` is the record page's cover; the default is the catalogue tile. */
+  size?: "sm" | "lg";
 }
 
 export interface BookDetailsProps {
@@ -62,21 +72,55 @@ export interface FormProps {
   book: BookProps;
   setBook: (book: BookProps) => void;
   onSubmit: () => void;
+  onCancel: () => void;
+  isEditing: boolean;
+  submitting: boolean;
 }
 
 export interface SearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  resultCount: number;
 }
+
+export type LoadStatus = "idle" | "loading" | "ready" | "error";
 
 export interface BookContextProps {
   books: BookProps[];
-  fetchBooks: () => Promise<void>;
+  status: LoadStatus;
+  error: string | null;
+  /** `background: true` re-syncs without dropping the shelf to skeletons. */
+  fetchBooks: (options?: { background?: boolean }) => Promise<void>;
   addBook: (book: BookProps) => Promise<void>;
   updateBook: (updatedBook: BookProps) => Promise<void>;
+  /** Optimistic delete. The request is held open for the Undo window. */
+  removeBook: (id: string) => void;
 }
 
+/* ImageUploader is not mounted anywhere. Its dropzone was never wired to an
+ * `onDrop`, and there is no upload endpoint on the API — it looked functional
+ * while doing nothing. The component and this type are kept in place for when
+ * cover upload is actually built. */
 export interface ImageUploaderProps {
   files: File[];
   handleOnDrop: (acceptedFiles: File[]) => void;
+}
+
+export interface ConfirmDialogProps {
+  isOpen: boolean;
+  title: string;
+  body: ReactNode;
+  confirmLabel: string;
+  cancelLabel?: string;
+  tone?: "danger" | "primary";
+  busy?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export interface EmptyStateProps {
+  title: string;
+  body: string;
+  mark?: ReactNode;
+  action?: ReactNode;
 }

@@ -1,119 +1,46 @@
 "use client";
 
-import { useBooks } from "@/context/BookContext";
-import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
 import Link from "next/link";
-import BookDetails from "./BookDetails";
-import CustomButton from "./CustomButton";
-import { BookProps } from "@/types";
-import { deleteBook } from "@/utils/api";
-import toast from "react-hot-toast";
+import { usePathname } from "next/navigation";
+import { useBooks } from "@/context/BookContext";
+import ThemeToggle from "./ThemeToggle";
 
-const NavBar = () => {
-  const { fetchBooks, addBook, updateBook } = useBooks();
+/* N6 · Newspaper masthead. The issue line carries the one number a catalogue
+ * actually has — how many books are on the shelf.
+ *
+ * The old navbar owned a second copy of the add/edit modal and mounted the
+ * book page's Edit and Delete buttons globally. Both moved: the modal is owned
+ * by whichever page opens it, and the record actions live on the record. */
+const Navbar = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [bookId, setBookId] = useState<string | null>(null);
-  const [book, setBook] = useState<BookProps>({
-    id: "",
-    title: "",
-    author: "",
-    description: "",
-    year: "",
-    edition: "",
-    language: "",
-    subject: "",
-    format: "",
-    publisher: "",
-  });
+  const { books, status } = useBooks();
+  const isRecord = /^\/books\/[^/]+$/.test(pathname);
 
-  const isBookPage = /^\/books\/[^/]+$/.test(pathname);
-
-  const handleOpenModal = (editing: boolean, id: string | null = null) => {
-    setIsEditing(editing);
-    setBookId(id);
-    if (!editing) {
-      setBook({
-        id: "",
-        title: "",
-        author: "",
-        description: "",
-        year: "",
-        edition: "",
-        language: "",
-        subject: "",
-        format: "",
-        publisher: "",
-      });
-    }
-    setIsOpen(true);
-  };
-
-  const handleDelete = async () => {
-    const id = pathname.split("/").pop();
-    if (id) {
-      const confirmed = window.confirm("Are you sure you want to delete?");
-      if (confirmed) {
-        try {
-          await deleteBook(id);
-          toast.error("Book was delete successfully!");
-          await fetchBooks();
-          router.push("/");
-        } catch (error) {
-          console.error("Failed to delete book", error);
-        }
-      }
-    }
-  };
+  /* Never report a count while the shelf is showing sample rows — the figure
+     would read as real holdings. */
+  const count =
+    status === "ready"
+      ? `${books.length} ${books.length === 1 ? "book" : "books"} on the shelf`
+      : status === "error"
+        ? "Catalogue unavailable"
+        : "Loading…";
 
   return (
-    <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4 bg-transparent">
-      <Link href="/" className="flex justify-center items-center">
-        <span className="text-xl md:text-3xl text-indigo-700 font-bold dark:text-dark">
-          Library Globe
-        </span>
-      </Link>
+    <header className={`mast ${isRecord ? "mast--compact" : ""}`.trim()}>
+      <div className="shell">
+        <p className="mast__line">
+          <span className="mast__edition">{count}</span>
+          <ThemeToggle />
+        </p>
 
-      <div className="hidden md:flex items-center gap-3">
-        {isBookPage ? (
-          <>
-            <CustomButton
-              title="⫷ ❌ ⫸ Delete Book"
-              btnType="button"
-              handleClick={handleDelete}
-              containerStyles="text-black rounded-lg bg-white hover:bg-red-200 hover:text-red-800 hover:font-bold min-w-[130px] me-6 border dark:border-red-200"
-            />
-            <CustomButton
-              title="⫷ ✍🏻 ⫸ Edit Book"
-              btnType="button"
-              handleClick={() =>
-                handleOpenModal(true, pathname.split("/").pop()!)
-              }
-              containerStyles="text-black bg-white hover:bg-blue-300 border dark:border-blue-300 rounded min-w-[130px] hover:text-blue-900 hover:font-bold me-6"
-            />
-          </>
-        ) : (
-          <></>
-        )}
+        <Link href="/" className="mast__name">
+          Library&nbsp;Globe
+        </Link>
+
+        <hr className="rule-double" aria-hidden="true" />
       </div>
-      <BookDetails
-        isOpen={isOpen}
-        closeModal={() => {
-          setIsOpen(false);
-          fetchBooks();
-        }}
-        isEditing={isEditing}
-        bookId={bookId}
-        book={book}
-        setBook={setBook}
-        onAddBook={addBook}
-        onUpdateBook={updateBook}
-      />
-    </nav>
+    </header>
   );
 };
 
-export default NavBar;
+export default Navbar;

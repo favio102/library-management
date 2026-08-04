@@ -1,56 +1,19 @@
-import Image from "next/image";
 import Link from "next/link";
-import { footerLinks } from "@/constants";
+import { colophon } from "@/constants";
 
+/* Ft4 · Dense typographic colophon. One block of small mono prose that closes
+ * the page, rather than four columns cataloguing a sitemap that doesn't exist. */
 const Footer = () => (
-  <footer className="flex flex-col text-black-100  mt-5 border-t border-gray-100">
-    <div className="flex max-md:flex-col flex-wrap justify-between gap-5 sm:px-16 px-6 py-10">
-      <div className="justify-center items-center content-center">
-        <Image
-          src="/logo.png"
-          alt="logo"
-          width={50}
-          height={18}
-          style={{ width: "auto", height: "auto" }}
-          className="object-contain"
-        />
-        {/* <p className="text-base text-gray-700">
-          Library 2024 <br />
-          All Rights Reserved &copy;
-        </p> */}
-      </div>
-
-      <div className="footer__links">
-        {footerLinks.map((item) => (
-          <div key={item.title} className="footer__link">
-            <h3 className="font-bold">{item.title}</h3>
-            <div className="flex flex-col gap-5">
-              {item.links.map((link) => (
-                <Link
-                  key={link.title}
-                  href={link.url}
-                  className="text-gray-500"
-                >
-                  {link.title}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <div className="flex justify-between items-center flex-wrap mt-10 border-t border-gray-100 sm:px-16 px-6 py-10">
-      <p>@2024 Library. All rights reserved</p>
-
-      <div className="footer__copyrights-link">
-        <Link href="/" className="text-gray-500">
-          Privacy & Policy
+  <footer className="colophon">
+    <div className="shell">
+      <p className="colophon__body">
+        <b>Library Globe.</b> {colophon.what} {colophon.build}{" "}
+        {colophon.covers} {colophon.type} Start from the{" "}
+        <Link href="/" className="colophon__link">
+          catalogue
         </Link>
-        <Link href="/" className="text-gray-500">
-          Terms & Condition
-        </Link>
-      </div>
+        . {colophon.rights}
+      </p>
     </div>
   </footer>
 );

@@ -1,0 +1,15 @@
+[
+  {
+    "date": "2026-08-04",
+    "scope": "app",
+    "genre": "editorial",
+    "macrostructure": "Marquee Hero + Catalogue + Long Document",
+    "theme": "Almanac",
+    "theme_axes": "light / high-contrast-serif / warm",
+    "nav": "N6 Newspaper masthead",
+    "footer": "Ft4 Dense colophon",
+    "enrichment": "Tier-A CSS-art book boards",
+    "design_system": "design.md",
+    "brief": "Library Globe · Next.js book catalogue — audit + whole-app redesign, dark mode wired, functional fixes"
+  }
+]

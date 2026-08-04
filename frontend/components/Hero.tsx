@@ -1,42 +1,70 @@
 "use client";
-import React from "react";
-import CustomButton from "./CustomButton";
-import Image from "next/image";
-import Link from "next/link";
 
+import { useMemo } from "react";
+import { useBooks } from "@/context/BookContext";
+
+/* Marquee Hero: typography is the visual, so the decorative hero.png is gone.
+ * Every figure below is computed from the catalogue itself — nothing here is
+ * a marketing number. When the shelf is empty the strip doesn't render. */
 const Hero = () => {
-  const handleScroll = () => {};
-  return (
-    <div className="hero">
-      <div className="flex-1 pt-6 padding-x">
-        <h1 className="hero__title">Discover & Share books.</h1>
+  const { books, status } = useBooks();
 
-        <Link href="#discover">
-          <CustomButton
-            title="Explore Library"
-            containerStyles="bg-white hover:bg-blue-700 text-black hover:text-white hover:font-bold rounded-lg mt-10 border dark:border-blue-600"
-            handleClick={handleScroll}
-          />
-        </Link>
-        <p className="hero__subtitle">
-          Library Globe is an open-source application for modern world to
-          discover, create and share variety of books.
+  const stats = useMemo(() => {
+    if (books.length === 0) return null;
+
+    const authors = new Set(
+      books.map((book) => book.author.trim().toLowerCase()).filter(Boolean)
+    );
+
+    /* Legacy records predate the year validation in the add form, so the
+       catalogue still holds values like "2". Excluding them keeps the span
+       honest instead of reporting "2–2115". */
+    const years = books
+      .map((book) => Number(book.year))
+      .filter((year) => Number.isFinite(year) && year >= 1000);
+
+    return {
+      books: books.length,
+      authors: authors.size,
+      span:
+        years.length > 0
+          ? `${Math.min(...years)}–${Math.max(...years)}`
+          : null,
+    };
+  }, [books]);
+
+  return (
+    <section className="hero">
+      <div>
+        <h1 className="hero__display">An open shelf, kept by everyone.</h1>
+      </div>
+
+      <div>
+        <p className="hero__lede">
+          Search what is already here, then add what is missing. Every record
+          stays editable by whoever spots the mistake.
         </p>
+
+        {status === "ready" && stats && (
+          <dl className="hero__meta">
+            <div className="hero__stat">
+              <dt className="label">Catalogued</dt>
+              <dd>{stats.books}</dd>
+            </div>
+            <div className="hero__stat">
+              <dt className="label">Authors</dt>
+              <dd>{stats.authors}</dd>
+            </div>
+            {stats.span && (
+              <div className="hero__stat">
+                <dt className="label">Years covered</dt>
+                <dd>{stats.span}</dd>
+              </div>
+            )}
+          </dl>
+        )}
       </div>
-      <div className="hero__image-container">
-        <div className="hero__image">
-          <Image
-            src="/hero.png"
-            alt="hero"
-            width={500}
-            height={20}
-            className="object-contain"
-            style={{ width: "auto", height: "auto" }}
-            priority
-          />
-        </div>
-      </div>
-    </div>
+    </section>
   );
 };
 

@@ -1,41 +1,28 @@
-"use client";
-
-import { useEffect } from "react";
-import Image from "next/image";
-import CustomButton from "./CustomButton";
 import Link from "next/link";
+import BookCover from "./BookCover";
+import { SAMPLE_PREFIX } from "@/constants";
 import { BookCardProps } from "@/types";
 
-const BookCard: React.FC<BookCardProps> = ({ book }) => {
-  // useEffect(() => {}, [book]);
-  return (
-    <div className="book-card group">
-      <div className="relative w-full h-40 my-3 flex justify-center items-center">
-        <Image
-          src="/book-cover.png"
-          alt="book"
-          width={100}
-          height={50}
-          priority
-          className="object-contain"
-        />
-      </div>
-      <div className="flex flex-col items-center">
-        <h4 className="book-card__content-title">{book.title}</h4>
-        <p className="flex mt-1 text-[12px] font-extrabold">{book.author}</p>
-        <p className="flex mt-1 text-[12px] font-extrabold">{book.year}</p>
-      </div>
+/* The whole card is the link. The old build hid a "View Details" button behind
+ * `group-hover`, which left touch and keyboard users with no way into a book. */
+const BookCard = ({ book }: BookCardProps) => {
+  const isSample = book.id.startsWith(SAMPLE_PREFIX);
 
-      <div className="relative flex flex-col w-full mt-2 group">
-        <Link href={`/books/${book.id}`} className="book-card__btn-container">
-          <CustomButton
-            title="View Details..."
-            containerStyles="w-full py-[16px] rounded-lg bg-violet-700"
-            textStyles="text-white text-[14px] leading-[17px] font-bold"
-          />
-        </Link>
+  return (
+    <Link href={`/books/${book.id}`} className="card">
+      <div className={isSample ? "board--sample" : undefined}>
+        <BookCover title={book.title} author={book.author} />
       </div>
-    </div>
+      <div>
+        {isSample && <p className="card__flag">Sample</p>}
+        <h3 className="card__title">{book.title}</h3>
+        <p className="card__byline">{book.author}</p>
+      </div>
+      <p className="card__foot">
+        <span className="card__year">{book.year || "Year unknown"}</span>
+        {book.format && <span className="card__format">{book.format}</span>}
+      </p>
+    </Link>
   );
 };
 

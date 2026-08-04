@@ -1,157 +1,168 @@
 "use client";
 
-import Image from "next/image";
-import Hero from "@/components/Hero";
+import { useMemo, useState } from "react";
+import { RiAddLine, RiBookLine, RiSearchLine } from "react-icons/ri";
 import {
   BookCard,
+  BookCardSkeleton,
   BookDetails,
   CustomButton,
+  EmptyState,
+  Hero,
   SearchBar,
-  BookCardSkeleton,
 } from "@/components";
 import { useBooks } from "@/context/BookContext";
-import { useEffect, useState } from "react";
 import { BookProps } from "@/types";
 
+const PAGE_SIZE = 12;
+
+const blankBook: BookProps = {
+  id: "",
+  title: "",
+  author: "",
+  description: "",
+  year: "",
+  edition: "",
+  language: "",
+  subject: "",
+  format: "",
+  publisher: "",
+};
+
 export default function Home() {
-  const { books, fetchBooks, addBook, updateBook } = useBooks();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [bookId, setBookId] = useState<string | null>(null);
+  const { books, status, addBook, updateBook } = useBooks();
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [visibleBooksCount, setVisibleBooksCount] = useState(8);
-  const [book, setBook] = useState<BookProps>({
-    id: "",
-    title: "",
-    author: "",
-    description: "",
-    year: "",
-    edition: "",
-    language: "",
-    subject: "",
-    format: "",
-    publisher: "",
-  });
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [draft, setDraft] = useState<BookProps>(blankBook);
 
-  const handleOpenModal = (editing: boolean, id: string | null = null) => {
-    setIsEditing(editing);
-    setBookId(id);
-    if (!editing) {
-      setBook({
-        id: "",
-        title: "",
-        author: "",
-        description: "",
-        year: "",
-        edition: "",
-        language: "",
-        subject: "",
-        format: "",
-        publisher: "",
-      });
-    }
+  const filtered = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase();
+    if (!query) return books;
+    return books.filter((book) =>
+      [book.title, book.author, book.year, book.subject, book.publisher]
+        .filter(Boolean)
+        .some((value) => value!.toLocaleLowerCase().includes(query))
+    );
+  }, [books, searchQuery]);
+
+  const openAddDialog = () => {
+    setDraft(blankBook);
     setIsOpen(true);
   };
 
-  useEffect(() => {
-    const loadBooks = async () => {
-      try {
-        await fetchBooks();
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadBooks();
-  }, []);
-
-  const filteredBooks = books.filter((book) => {
-    const query = searchQuery.toLocaleLowerCase();
-    return (
-      book.title.toLocaleLowerCase().includes(query) ||
-      book.author.toLocaleLowerCase().includes(query) ||
-      book.year.toLocaleLowerCase().includes(query)
-    );
-  });
-
-  const handleClick = () => {
-    setVisibleBooksCount((prevCount) => prevCount + 8);
-  };
+  const visible = filtered.slice(0, visibleCount);
+  const remaining = filtered.length - visible.length;
 
   return (
-    <main className="overflow-hidden">
-      <Hero />
-      <div className="mt-12 padding-x padding-y max-width" id="discover">
-        <div className="mx-auto flex justify-between items-center sm:px-16 px-6 py-4">
-          <div className="flex justify-center items-center">
-            <div className="home__text-container">
-              <h1 className="text-4xl font-extrabold">Book Catalogue</h1>
-              <p>
-                Explore out books you might like or share a book to the world.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="home__filters">
-          <SearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-          <CustomButton
-            title="✚ Add a New Book"
-            btnType="button"
-            handleClick={() => handleOpenModal(false)}
-            containerStyles="text-fuchsia-400 rounded bg-white hover:bg-blue-100 min-w-[130px] me-6 border dark:border-slate-300 hover:text-blue-800 hover:font-bold"
-          />
-        </div>
-        <BookDetails
-          isOpen={isOpen}
-          closeModal={() => {
-            setIsOpen(false);
-          }}
-          isEditing={isEditing}
-          bookId={bookId}
-          book={book}
-          setBook={setBook}
-          onAddBook={addBook}
-          onUpdateBook={updateBook}
-        />
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
-            {Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <BookCardSkeleton key={i} />
-              ))}
-          </div>
-        ) : isError ? (
-          <p>Error loading books.</p>
-        ) : filteredBooks.length > 0 ? (
-          <section>
-            <div className="home__books-wrapper">
-              {filteredBooks.slice(0, visibleBooksCount).map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
-            </div>
-          </section>
-        ) : (
-          <div className="home__error-container">
-            <h2 className="text-black text-xl font-bold">No Books Found.</h2>
-          </div>
-        )}
+    <>
+      <div className="shell">
+        <Hero />
       </div>
-      {visibleBooksCount < filteredBooks.length && (
-        <CustomButton
-          title="Show More"
-          btnType="button"
-          containerStyles="bg-white hover:bg-blue-700 text-black hover:text-white hover:font-bold rounded-lg mt-10 border dark:border-blue-600 mx-auto"
-          handleClick={handleClick}
-        />
-      )}
-    </main>
+
+      <hr className="rule-thick" aria-hidden="true" />
+
+      <div className="shell">
+        <section className="sect sect--tight" aria-labelledby="catalogue-heading">
+          <div className="sect__head">
+            <h2 id="catalogue-heading" className="sect__title">
+              The catalogue
+            </h2>
+            <p className="sect__note">
+              Every book on the shelf, newest first. Select one to read its
+              record.
+            </p>
+          </div>
+
+          <div className="toolbar">
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              resultCount={filtered.length}
+            />
+            <CustomButton
+              title="Add a book"
+              tone="primary"
+              icon={<RiAddLine size={16} />}
+              handleClick={openAddDialog}
+            />
+          </div>
+
+          {status === "loading" && (
+            <div className="catalogue">
+              {Array.from({ length: 8 }, (_, index) => (
+                <BookCardSkeleton key={`skeleton-${index}`} />
+              ))}
+            </div>
+          )}
+
+          {status === "ready" && books.length === 0 && (
+            <EmptyState
+              mark={<RiBookLine size={18} />}
+              title="The shelf is empty."
+              body="Nothing has been catalogued yet. Add the first book and it will show up here straight away."
+              action={
+                <CustomButton
+                  title="Add the first book"
+                  tone="primary"
+                  icon={<RiAddLine size={16} />}
+                  handleClick={openAddDialog}
+                />
+              }
+            />
+          )}
+
+          {status === "ready" && books.length > 0 && filtered.length === 0 && (
+            <EmptyState
+              mark={<RiSearchLine size={18} />}
+              title={`Nothing matches “${searchQuery.trim()}”.`}
+              body="No title, author, year, subject or publisher on the shelf contains that. Try a shorter search, or add the book yourself."
+              action={
+                <CustomButton
+                  title="Clear the search"
+                  tone="quiet"
+                  handleClick={() => setSearchQuery("")}
+                />
+              }
+            />
+          )}
+
+          {/* Also renders on `error`, where `visible` holds the sample rows. */}
+          {status !== "loading" && visible.length > 0 && (
+            <>
+              <div className="catalogue">
+                {visible.map((book) => (
+                  <BookCard key={book.id} book={book} />
+                ))}
+              </div>
+
+              {remaining > 0 && (
+                <div className="flex justify-start">
+                  <CustomButton
+                    title={`Show ${Math.min(remaining, PAGE_SIZE)} more · ${remaining} left`}
+                    tone="type"
+                    handleClick={() =>
+                      setVisibleCount((count) => count + PAGE_SIZE)
+                    }
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </section>
+      </div>
+
+      <BookDetails
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        isEditing={false}
+        bookId={null}
+        book={draft}
+        setBook={setDraft}
+        onAddBook={addBook}
+        onUpdateBook={updateBook}
+      />
+    </>
   );
 }

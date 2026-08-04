@@ -1,62 +1,70 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-if (!API_BASE_URL) {
-  throw new Error("API_BASE_URL is not defined");
-}
+import { BookProps } from "@/types";
 
-// Get all books
-export const getBooks = async (): Promise<any[]> => {
-  const response = await fetch(`${API_BASE_URL}/books`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch books");
+/* Read the base URL lazily. A module-scope throw here would take the whole
+ * client bundle down at import time instead of surfacing a readable error
+ * state in the UI. */
+const baseUrl = () => {
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!url) {
+    throw new Error(
+      "NEXT_PUBLIC_API_BASE_URL is not set. Add it to frontend/.env and restart the dev server."
+    );
   }
-  return response.json();
+  return url.replace(/\/$/, "");
 };
 
-// Get a single book by ID
-export const getBookById = async (id: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/books/${id}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch book");
-  }
-  return response.json();
-};
+/* A hung socket — laptop woke from sleep, API is gone, Atlas is re-electing —
+ * would otherwise leave the request pending forever and the UI stuck on
+ * skeletons. Fail fast enough to show a retry instead. */
+const TIMEOUT_MS = 12000;
 
-// Create a new book
-export const createBook = async (book: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/books`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(book),
+const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
+  const response = await fetch(`${baseUrl()}${path}`, {
+    ...init,
+    signal: init?.signal ?? AbortSignal.timeout(TIMEOUT_MS),
+    headers: init?.body
+      ? { "Content-Type": "application/json", ...init?.headers }
+      : init?.headers,
   });
+
   if (!response.ok) {
-    throw new Error("Failed to create book");
+    throw new Error(
+      `${init?.method ?? "GET"} ${path} failed (${response.status})`
+    );
   }
-  return response.json();
+
+  if (response.status === 204) return undefined as T;
+
+  const text = await response.text();
+  return (text ? JSON.parse(text) : undefined) as T;
 };
 
-// Update an existing book
-export const updateBook = async (id: string, book: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+export const getBooks = () => request<BookProps[]>("/books");
+
+export const getBookById = (id: string) =>
+  request<BookProps>(`/books/${encodeURIComponent(id)}`);
+
+export const createBook = (book: BookProps) =>
+  request<BookProps>("/books", { method: "POST", body: JSON.stringify(book) });
+
+export const updateBook = (id: string, book: BookProps) =>
+  request<BookProps>(`/books/${encodeURIComponent(id)}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(book),
   });
-  if (!response.ok) {
-    throw new Error("Failed to update book");
-  }
-  return response.json();
-};
 
-// Delete a book by ID
-export const deleteBook = async (id: string): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/books/${id}`, {
-    method: "DELETE",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to delete book");
+export const deleteBook = (id: string) =>
+  request<void>(`/books/${encodeURIComponent(id)}`, { method: "DELETE" });
+
+/* Fired from `pagehide` so a delete still lands if the tab closes while its
+ * Undo window is open. `keepalive` lets the request outlive the document. */
+export const deleteBookOnUnload = (id: string) => {
+  try {
+    fetch(`${baseUrl()}/books/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      keepalive: true,
+    });
+  } catch {
+    /* The document is going away; there is nobody left to tell. */
   }
 };

@@ -1,129 +1,172 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { CustomButton, CustomInput } from "@/components";
-import { FormProps } from "@/types";
-import ImageUploader from "./ImageUploader";
-import toast from "react-hot-toast";
+import React, { useMemo, useState } from "react";
+import CustomButton from "./CustomButton";
+import CustomInput from "./CustomInput";
+import { BookProps, FormProps } from "@/types";
 
-const Form = ({ book, setBook, onSubmit }: FormProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBook({ ...book, [e.target.name]: e.target.value });
-  };
-  const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
-  useEffect(() => {}, []);
+type FieldName = "title" | "author" | "year";
 
-  const handleOnDrop = (files: File[]) => {
-    if (FileSystem.length > 1) {
-      toast("You can upload up to 1 image.");
+const THIS_YEAR = 2026;
+
+/* Errors follow the three-beat rule: what broke, why, what to do.
+ * Only title, author and year are required — the previous build marked all ten
+ * fields required, which made adding a book you only half-know impossible. */
+const validate = (book: BookProps): Partial<Record<FieldName, string>> => {
+  const errors: Partial<Record<FieldName, string>> = {};
+
+  if (!book.title.trim()) errors.title = "A record needs a title to be found by.";
+  if (!book.author.trim()) errors.author = "Add the author, or write “Unknown”.";
+
+  const year = book.year.trim();
+  if (!year) {
+    errors.year = "Add the year of publication.";
+  } else if (!/^\d{1,4}$/.test(year)) {
+    errors.year = "Use digits only — 1968, not “circa 1968”.";
+  } else {
+    const value = Number(year);
+    if (value < 1000 || value > THIS_YEAR + 1) {
+      errors.year = `Publication years run from 1000 to ${THIS_YEAR + 1}.`;
+    }
+  }
+
+  return errors;
+};
+
+const Form = ({
+  book,
+  setBook,
+  onSubmit,
+  onCancel,
+  isEditing,
+  submitting,
+}: FormProps) => {
+  const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const errors = useMemo(() => validate(book), [book]);
+
+  /* Validate on blur, then keep revalidating that field as it changes. */
+  const errorFor = (name: FieldName) =>
+    touched[name] || submitAttempted ? errors[name] : undefined;
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setBook({ ...book, [event.target.name]: event.target.value });
+
+  const handleBlur = (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setTouched((prev) => ({ ...prev, [event.target.name]: true }));
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setSubmitAttempted(true);
+    if (Object.keys(errors).length > 0) {
+      const first = document.querySelector<HTMLElement>('[aria-invalid="true"]');
+      first?.focus();
       return;
     }
-    setAcceptedFiles(files);
+    onSubmit();
+  };
+
+  const field = {
+    onChange: handleChange,
+    onBlur: handleBlur,
   };
 
   return (
-    <form
-      className="max-w-[1440px] p-3 md:p-5 rounded-lg"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit();
-      }}
-    >
-      <p className="text-gray-400 text-sm font-light my-2">
-        Please enter your Book information.
-      </p>
-      <div className="flex flex-col gap-6 md:gap-7">
-        <div className="flex flex-col items-center w-full gap-1 md:gap-4">
-          <CustomInput
-            label="Title"
-            name="title"
-            placeholder="Title"
-            value={book.title}
-            onChange={handleChange}
-            required
-          />
-          <CustomInput
-            label="Author"
-            name="author"
-            placeholder="Author"
-            value={book.author}
-            onChange={handleChange}
-            required
-          />
-          <CustomInput
-            label="Description"
-            name="description"
-            placeholder="Description"
-            value={book.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="flex flex-col md:flex-row items-center w-full gap-1 md:gap-4">
-          <CustomInput
-            label="Publication Year"
-            name="year"
-            placeholder="Publication Year"
-            btnType="number"
-            value={book.year}
-            onChange={handleChange}
-            required
-          />
-          <CustomInput
-            label="Edition"
-            name="edition"
-            placeholder="Edition"
-            btnType="text"
-            value={book.edition}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="flex flex-col md:flex-row items-center w-full gap-1 md:gap-4">
-          <CustomInput
-            label="Language"
-            name="language"
-            placeholder="Language"
-            btnType="text"
-            value={book.language}
-            onChange={handleChange}
-            required
-          />
-          <CustomInput
-            label="Subjects/Keywords"
-            name="subject"
-            placeholder="Subjects/Keywords"
-            btnType="text"
-            value={book.subject}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="flex flex-col md:flex-row items-center w-full gap-1 md:gap-4">
-          <CustomInput
-            label="Formats Available"
-            name="format"
-            placeholder="Formats Available"
-            btnType="text"
-            value={book.format}
-            onChange={handleChange}
-            required
-          />
-          <CustomInput
-            label="Publisher"
-            name="publisher"
-            placeholder="Publisher"
-            btnType="text"
-            value={book.publisher}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <ImageUploader files={acceptedFiles} handleOnDrop={handleOnDrop} />
+    <form onSubmit={handleSubmit} noValidate>
+      <div className="form__grid">
+        <CustomInput
+          label="Title"
+          name="title"
+          placeholder="The Left Hand of Darkness"
+          value={book.title}
+          required
+          error={errorFor("title")}
+          {...field}
+        />
+        <CustomInput
+          label="Author"
+          name="author"
+          placeholder="Ursula K. Le Guin"
+          value={book.author}
+          required
+          error={errorFor("author")}
+          {...field}
+        />
+        <CustomInput
+          label="Description"
+          name="description"
+          placeholder="What the book is about, in a sentence or two."
+          value={book.description ?? ""}
+          multiline
+          help="Optional. Shown on the book’s record page."
+          {...field}
+        />
+      </div>
+
+      <div className="form__grid form__grid--two" style={{ marginTop: "var(--space-md)" }}>
+        <CustomInput
+          label="Publication year"
+          name="year"
+          placeholder="1969"
+          inputType="number"
+          value={book.year}
+          required
+          error={errorFor("year")}
+          {...field}
+        />
+        <CustomInput
+          label="Edition"
+          name="edition"
+          placeholder="First"
+          value={book.edition ?? ""}
+          {...field}
+        />
+        <CustomInput
+          label="Language"
+          name="language"
+          placeholder="English"
+          value={book.language ?? ""}
+          {...field}
+        />
+        <CustomInput
+          label="Subjects"
+          name="subject"
+          placeholder="Science fiction, gender"
+          value={book.subject ?? ""}
+          {...field}
+        />
+        <CustomInput
+          label="Format"
+          name="format"
+          placeholder="Paperback"
+          value={book.format ?? ""}
+          {...field}
+        />
+        <CustomInput
+          label="Publisher"
+          name="publisher"
+          placeholder="Ace Books"
+          value={book.publisher ?? ""}
+          {...field}
+        />
+      </div>
+
+      <div className="form__actions">
         <CustomButton
-          title="Submit"
+          title="Cancel"
+          tone="quiet"
+          handleClick={onCancel}
+          disabled={submitting}
+        />
+        <CustomButton
+          title={isEditing ? "Save changes" : "Add to the shelf"}
+          loadingTitle={isEditing ? "Saving…" : "Adding…"}
+          tone="primary"
           btnType="submit"
-          containerStyles="bg-white hover:bg-blue-700 border text-black hover:text-white ml-auto mt-4 w-fit rounded-lg hover:font-bold dark:border-blue-600"
+          loading={submitting}
         />
       </div>
     </form>
