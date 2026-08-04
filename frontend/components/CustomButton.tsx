@@ -1,33 +1,44 @@
 "use client";
 
-import Image from "next/image";
 import { CustomButtonProps } from "@/types";
 
+const toneClass = {
+  primary: "btn--primary",
+  quiet: "btn--quiet",
+  danger: "btn--danger",
+  type: "btn--type",
+} as const;
+
+/* All eight states live in `.btn` and its tone modifiers in globals.css:
+ * default · hover · focus-visible · active · disabled · loading · error ·
+ * success. Loading swaps the label rather than adding a second signal. */
 const Button = ({
   title,
-  containerStyles,
+  tone = "quiet",
+  containerStyles = "",
   handleClick,
-  btnType,
-  textStyles,
-  rightIcon,
+  btnType = "button",
+  disabled = false,
+  loading = false,
+  loadingTitle,
+  icon,
+  ariaLabel,
 }: CustomButtonProps) => (
   <button
-    disabled={false}
     type={btnType}
-    className={`custom-btn ${containerStyles} ${textStyles}`}
+    className={`btn ${toneClass[tone]} ${containerStyles}`.trim()}
     onClick={handleClick}
+    disabled={disabled || loading}
+    aria-label={ariaLabel}
+    aria-busy={loading || undefined}
+    data-state={loading ? "loading" : undefined}
   >
-    <span className={`flex-1`}>{title}</span>
-    {rightIcon && (
-      <div className="relative w-6 h-6">
-        <Image
-          src={rightIcon}
-          alt="arrow_left"
-          fill
-          className="object-contain"
-        />
-      </div>
+    {loading ? (
+      <span className="btn__spinner" aria-hidden="true" />
+    ) : (
+      icon && <span aria-hidden="true">{icon}</span>
     )}
+    <span>{loading ? loadingTitle ?? title : title}</span>
   </button>
 );
 
