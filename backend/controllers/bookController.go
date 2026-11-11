@@ -83,7 +83,7 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
 	cursor, err := bc.bookCollection.Find(ctx, bson.M{})
 	if err != nil {
 		log.Println("Error fetching books:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 	defer cursor.Close(ctx)
@@ -92,7 +92,7 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
 		var book models.Book
 		if err = cursor.Decode(&book); err != nil {
 			log.Println("Error decoding book:", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
 		books = append(books, book)
@@ -100,13 +100,13 @@ func (bc *BookController) GetBooks(w http.ResponseWriter, r *http.Request) {
 
 	if err := cursor.Err(); err != nil {
 		log.Println("Cursor error:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(books); err != nil {
 		log.Println("Error encoding books to JSON:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 }
 
@@ -126,7 +126,7 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 	objID, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
 		log.Println("Invalid book ID:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid book id", http.StatusBadRequest)
 		return
 	}
 
@@ -143,7 +143,7 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(book); err != nil {
 		log.Println("Error encoding book to JSON:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 }
 
@@ -162,7 +162,7 @@ func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
 	err := decodeBook(w, r, &book)
 	if err != nil {
 		log.Println("Error decoding request body:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 
@@ -180,14 +180,14 @@ func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
 	_, err = bc.bookCollection.InsertOne(ctx, book)
 	if err != nil {
 		log.Println("Error inserting book:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(book); err != nil {
 		log.Println("Error encoding book to JSON:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 }
 
@@ -208,7 +208,7 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	objID, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
 		log.Println("Invalid book ID:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid book id", http.StatusBadRequest)
 		return
 	}
 
@@ -216,7 +216,7 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	err = decodeBook(w, r, &book)
 	if err != nil {
 		log.Println("Error decoding request body:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 
@@ -237,13 +237,13 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	_, err = bc.bookCollection.UpdateOne(ctx, bson.M{"_id": objID}, update)
 	if err != nil {
 		log.Println("Error updating book:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(book); err != nil {
 		log.Println("Error encoding book to JSON:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 }
 
@@ -263,7 +263,7 @@ func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	objID, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
 		log.Println("Invalid book ID:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid book id", http.StatusBadRequest)
 		return
 	}
 
@@ -273,13 +273,13 @@ func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	_, err = bc.bookCollection.DeleteOne(ctx, bson.M{"_id": objID})
 	if err != nil {
 		log.Println("Error deleting book:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	response := "Book deleted"
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Println("Error encoding response to JSON:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 }

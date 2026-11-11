@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "net/http"
+    "os"
     "time"
 
     _ "url-cleanup/docs"
@@ -20,7 +21,10 @@ import (
 
 func main() {
     http.HandleFunc("/process-url", handlers.ProcessURL)
-    http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
+    // Only serve the API docs outside production.
+    if os.Getenv("APP_ENV") != "production" {
+        http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
+    }
 
     log.Println("Starting server on :8080")
     srv := &http.Server{

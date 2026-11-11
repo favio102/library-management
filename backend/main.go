@@ -59,8 +59,11 @@ func createRouter() http.Handler {
 	// Wrap the router with CORS middleware
 	handler := corsHandler.Handler(router)
 
-	// Add Swagger endpoint
-	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+	// Swagger docs map out the whole API, so only serve them outside
+	// production. Set APP_ENV=production on the deployed server.
+	if os.Getenv("APP_ENV") != "production" {
+		router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+	}
 
 	// Custom 404 handler
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
