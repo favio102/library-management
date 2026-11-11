@@ -26,6 +26,11 @@ type Response struct {
 // @Failure 500 {string} string "Failed to send response"
 // @Router /process-url [post]
 func ProcessURL(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+    r.Body = http.MaxBytesReader(w, r.Body, 8<<10) // 8 KB is plenty for one URL
     var req Request
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
         http.Error(w, "Invalid request payload", http.StatusBadRequest)

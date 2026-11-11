@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -87,7 +88,17 @@ func main() {
 
 	// Start the server
 	log.Printf("Server is running and listening on port %s...\n", port)
-	if err := http.ListenAndServe(":"+port, handler); err != nil {
+	// Timeouts stop slow or stalled clients from holding connections open
+	// forever (Slowloris). Plain http.ListenAndServe has none.
+	srv := &http.Server{
+		Addr:              ":" + port,
+		Handler:           handler,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      20 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("Could not start server: %s\n", err.Error())
 	}
 }

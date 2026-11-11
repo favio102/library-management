@@ -26,10 +26,41 @@ func NewBookController(client *mongo.Client) *BookController {
 	return &BookController{bookCollection}
 }
 
+// maxBodyBytes caps a create/update request body. A book record is a few KB
+// at most; anything bigger is a mistake or an attempt to exhaust memory.
+const maxBodyBytes = 64 << 10 // 64 KB
+
+// decodeBook reads a size-limited JSON body into book.
+func decodeBook(w http.ResponseWriter, r *http.Request, book *models.Book) error {
+	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
+	return json.NewDecoder(r.Body).Decode(book)
+}
+
 // validateBook validates the book fields
 func validateBook(book *models.Book) error {
 	if book.Title == "" {
 		return fmt.Errorf("title cannot be empty")
+	}
+	// Per-field caps keep a single record from bloating the collection.
+	limits := []struct {
+		name  string
+		value string
+		max   int
+	}{
+		{"title", book.Title, 300},
+		{"author", book.Author, 300},
+		{"description", book.Description, 5000},
+		{"year", book.Year, 10},
+		{"edition", book.Edition, 100},
+		{"language", book.Language, 100},
+		{"subject", book.Subject, 300},
+		{"publisher", book.Publisher, 300},
+		{"format", book.Format, 100},
+	}
+	for _, f := range limits {
+		if len(f.value) > f.max {
+			return fmt.Errorf("%s is too long (max %d characters)", f.name, f.max)
+		}
 	}
 	return nil
 }
@@ -128,7 +159,7 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var book models.Book
-	err := json.NewDecoder(r.Body).Decode(&book)
+	err := decodeBook(w, r, &book)
 	if err != nil {
 		log.Println("Error decoding request body:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -182,7 +213,7 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var book models.Book
-	err = json.NewDecoder(r.Body).Decode(&book)
+	err = decodeBook(w, r, &book)
 	if err != nil {
 		log.Println("Error decoding request body:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
