@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 var Client *mongo.Client
@@ -33,7 +33,7 @@ func ConnectDB() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, clientOptions)
+	client, err := mongo.Connect(clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"library-management/controllers"
 )
 

@@ -8,7 +8,7 @@ require (
 	github.com/rs/cors v1.11.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.6
-	go.mongodb.org/mongo-driver v1.17.10
+	go.mongodb.org/mongo-driver/v2 v2.10.0
 )
 
 require (
@@ -23,9 +23,7 @@ require (
 	github.com/go-openapi/swag/stringutils v0.29.2 // indirect
 	github.com/go-openapi/swag/typeutils v0.29.2 // indirect
 	github.com/go-openapi/swag/yamlutils v0.29.2 // indirect
-	github.com/golang/snappy v1.0.0 // indirect
 	github.com/klauspost/compress v1.20.4 // indirect
-	github.com/montanaflynn/stats v0.14.0 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
 	github.com/xdg-go/scram v1.4.0 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect

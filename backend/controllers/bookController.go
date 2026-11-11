@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"library-management/models"
 )
 
@@ -123,7 +122,7 @@ func (bc *BookController) GetBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
-	objID, err := primitive.ObjectIDFromHex(params["id"])
+	objID, err := bson.ObjectIDFromHex(params["id"])
 	if err != nil {
 		log.Println("Invalid book ID:", err)
 		http.Error(w, "invalid book id", http.StatusBadRequest)
@@ -173,7 +172,7 @@ func (bc *BookController) CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book.ID = primitive.NewObjectID()
+	book.ID = bson.NewObjectID()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -205,7 +204,7 @@ func (bc *BookController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
-	objID, err := primitive.ObjectIDFromHex(params["id"])
+	objID, err := bson.ObjectIDFromHex(params["id"])
 	if err != nil {
 		log.Println("Invalid book ID:", err)
 		http.Error(w, "invalid book id", http.StatusBadRequest)
@@ -260,7 +259,7 @@ func (bc *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
-	objID, err := primitive.ObjectIDFromHex(params["id"])
+	objID, err := bson.ObjectIDFromHex(params["id"])
 	if err != nil {
 		log.Println("Invalid book ID:", err)
 		http.Error(w, "invalid book id", http.StatusBadRequest)
