@@ -37,6 +37,11 @@ func ProcessURL(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    if !utils.IsWebURL(req.URL) {
+        http.Error(w, "URL must be an absolute http or https address", http.StatusBadRequest)
+        return
+    }
+
     var processedURL string
     switch req.Operation {
     case "redirection":

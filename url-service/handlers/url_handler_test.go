@@ -43,6 +43,30 @@ func TestProcessURL(t *testing.T) {
             expectedURL:    "https://www.byfood.com/food-experiences",
         },
         {
+            name: "javascript URL is rejected",
+            requestBody: Request{
+                URL:       "javascript:alert(1)",
+                Operation: "all",
+            },
+            expectedStatus: http.StatusBadRequest,
+        },
+        {
+            name: "data URL is rejected",
+            requestBody: Request{
+                URL:       "data:text/html,<script>alert(1)</script>",
+                Operation: "redirection",
+            },
+            expectedStatus: http.StatusBadRequest,
+        },
+        {
+            name: "Relative URL is rejected",
+            requestBody: Request{
+                URL:       "/food-experiences",
+                Operation: "canonical",
+            },
+            expectedStatus: http.StatusBadRequest,
+        },
+        {
             name: "Invalid operation",
             requestBody: Request{
                 URL:       "https://BYFOOD.com/food-EXPeriences?query=abc/",
