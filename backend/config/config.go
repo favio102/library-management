@@ -14,21 +14,15 @@ import (
 
 var Client *mongo.Client
 
-func LoadEnv() error {
-	err := godotenv.Load()
-	if err != nil {
-		return err
+// LoadEnv reads .env when one exists. A missing file is not an error:
+// in production the variables come from the host (e.g. Render).
+func LoadEnv() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables")
 	}
-	return nil
 }
 
 func ConnectDB() *mongo.Client {
-	// Load environment variables
-	err := LoadEnv()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	connectionString := os.Getenv("MONGODB_URL")
 	if connectionString == "" {
 		log.Fatal("MONGODB_URL is not set in the environment variables")

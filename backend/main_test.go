@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"library-management/config"
 )
 
 func TestMainHandler(t *testing.T) {
@@ -17,6 +19,7 @@ func TestMainHandler(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Create the router using the same setup as in main.go
+	config.LoadEnv()
 	router := createRouter()
 
 	// Serve the HTTP request

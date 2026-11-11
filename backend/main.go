@@ -74,11 +74,9 @@ func createRouter() http.Handler {
 }
 
 func main() {
-	// Load environment variables
-	err := config.LoadEnv()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// Load .env if present (local dev). On Render the variables are set in
+	// the dashboard and there is no .env file, which is fine.
+	config.LoadEnv()
 
 	// Get the port from the environment variable or default to 8080
 	port := os.Getenv("PORT")
