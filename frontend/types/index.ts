@@ -97,6 +97,16 @@ export interface BookContextProps {
   removeBook: (id: string) => void;
 }
 
+export interface AuthContextProps {
+  /** UI hint only — the /api routes enforce the real check. */
+  isAdmin: boolean;
+  /** False until the first session check has answered. */
+  checked: boolean;
+  login: (password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  markSignedOut: () => void;
+}
+
 /* ImageUploader is not mounted anywhere. Its dropzone was never wired to an
  * `onDrop`, and there is no upload endpoint on the API — it looked functional
  * while doing nothing. The component and this type are kept in place for when

@@ -1307,3 +1307,19 @@ textarea.input {
     animation-duration: 2s !important;
   }
 }
+
+/* Masthead right-hand cluster: admin link + theme toggle. */
+.mast__tools {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.mast__link--btn {
+  background: none;
+  border-top: 0;
+  border-inline: 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}

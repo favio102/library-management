@@ -16,7 +16,9 @@ import {
   updateBook as updateBookApi,
   deleteBook as deleteBookApi,
   deleteBookOnUnload,
+  UnauthorizedError,
 } from "@/utils/api";
+import { useAuth } from "@/context/AuthContext";
 import { fallbackBooks } from "@/constants";
 import { BookProps, BookContextProps, LoadStatus } from "@/types";
 
@@ -27,6 +29,8 @@ const BookContext = createContext<BookContextProps | undefined>(undefined);
 const UNDO_WINDOW = 6000;
 
 export const BookProvider = ({ children }: { children: ReactNode }) => {
+  const { markSignedOut } = useAuth();
+
   const [books, setBooks] = useState<BookProps[]>([]);
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [error, setError] = useState<string | null>(null);
@@ -127,17 +131,37 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
     return () => window.removeEventListener("pagehide", flush);
   }, []);
 
-  const addBook = useCallback(async (book: BookProps) => {
-    const created = await createBook(book);
-    setBooks((prev) => [created ?? book, ...prev]);
-  }, []);
+  /* A 401 means the admin cookie expired mid-session: drop the edit controls
+   * and let the caller show the error. */
+  const guard = useCallback(
+    async <T,>(write: () => Promise<T>) => {
+      try {
+        return await write();
+      } catch (cause) {
+        if (cause instanceof UnauthorizedError) markSignedOut();
+        throw cause;
+      }
+    },
+    [markSignedOut]
+  );
 
-  const updateBook = useCallback(async (updated: BookProps) => {
-    const saved = await updateBookApi(updated.id, updated);
-    setBooks((prev) =>
-      prev.map((book) => (book.id === updated.id ? saved ?? updated : book))
-    );
-  }, []);
+  const addBook = useCallback(
+    async (book: BookProps) => {
+      const created = await guard(() => createBook(book));
+      setBooks((prev) => [created ?? book, ...prev]);
+    },
+    [guard]
+  );
+
+  const updateBook = useCallback(
+    async (updated: BookProps) => {
+      const saved = await guard(() => updateBookApi(updated.id, updated));
+      setBooks((prev) =>
+        prev.map((book) => (book.id === updated.id ? saved ?? updated : book))
+      );
+    },
+    [guard]
+  );
 
   const removeBook = useCallback((id: string) => {
     const index = booksRef.current.findIndex((book) => book.id === id);
@@ -158,11 +182,13 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
     const timer = setTimeout(async () => {
       pendingDeletes.current.delete(id);
       try {
-        await deleteBookApi(id);
-      } catch {
+        await guard(() => deleteBookApi(id));
+      } catch (cause) {
         restore();
         toast.error(
-          `“${removed.title}” could not be removed. The catalogue rejected the request — try again.`
+          cause instanceof UnauthorizedError
+            ? cause.message
+            : `“${removed.title}” could not be removed. The catalogue rejected the request — try again.`
         );
       }
     }, UNDO_WINDOW);
@@ -192,7 +218,7 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
       ),
       { duration: UNDO_WINDOW }
     );
-  }, []);
+  }, [guard]);
 
   return (
     <BookContext.Provider

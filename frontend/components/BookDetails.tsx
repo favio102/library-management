@@ -11,7 +11,7 @@ import {
 import toast from "react-hot-toast";
 import { RiCloseLine } from "react-icons/ri";
 import Form from "./Form";
-import { getBookById } from "@/utils/api";
+import { getBookById, UnauthorizedError } from "@/utils/api";
 import { BookDetailsProps } from "@/types";
 
 /* Silent success: adding a book puts it at the top of the catalogue and
@@ -65,9 +65,11 @@ const BookDetails = ({
         await onAddBook(book);
       }
       closeModal();
-    } catch {
+    } catch (cause) {
       toast.error(
-        isEditing
+        cause instanceof UnauthorizedError
+          ? cause.message
+          : isEditing
           ? "The changes were not saved. The catalogue rejected the request — try again."
           : "The book was not added. The catalogue rejected the request — try again."
       );

@@ -18,6 +18,7 @@ import {
   EmptyState,
 } from "@/components";
 import { useBooks } from "@/context/BookContext";
+import { useAuth } from "@/context/AuthContext";
 import { getBookById } from "@/utils/api";
 import { SAMPLE_PREFIX } from "@/constants";
 import { BookProps } from "@/types";
@@ -35,6 +36,7 @@ const BookPage = () => {
   const params = useParams();
   const router = useRouter();
   const { books, status, updateBook, addBook, removeBook } = useBooks();
+  const { isAdmin } = useAuth();
 
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
@@ -193,7 +195,7 @@ const BookPage = () => {
                 edited or removed.
               </p>
             </div>
-          ) : (
+          ) : isAdmin ? (
             <div className="record__actions">
               <CustomButton
                 title="Edit record"
@@ -211,12 +213,12 @@ const BookPage = () => {
                 handleClick={() => setConfirmingRemove(true)}
               />
             </div>
-          )}
+          ) : null}
         </div>
       </article>
 
       <ConfirmDialog
-        isOpen={confirmingRemove}
+        isOpen={confirmingRemove && isAdmin}
         title="Remove this book?"
         body={
           <>
@@ -236,7 +238,7 @@ const BookPage = () => {
 
       {draft && (
         <BookDetails
-          isOpen={isEditing}
+          isOpen={isEditing && isAdmin}
           closeModal={() => setIsEditing(false)}
           isEditing
           bookId={book.id}

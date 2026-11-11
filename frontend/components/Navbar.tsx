@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 import { useBooks } from "@/context/BookContext";
+import { useAuth } from "@/context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
 
 /* N6 · Newspaper masthead. The issue line carries the one number a catalogue
@@ -14,6 +16,10 @@ import ThemeToggle from "./ThemeToggle";
 const Navbar = () => {
   const pathname = usePathname();
   const { books, status } = useBooks();
+  const { isAdmin, checked, logout } = useAuth();
+
+  const handleSignOut = () =>
+    logout().catch(() => toast.error("Sign-out failed. Try again."));
   const isRecord = /^\/books\/[^/]+$/.test(pathname);
 
   /* Never report a count while the shelf is showing sample rows — the figure
@@ -30,7 +36,28 @@ const Navbar = () => {
       <div className="shell">
         <p className="mast__line">
           <span className="mast__edition">{count}</span>
-          <ThemeToggle />
+          <span className="mast__tools">
+            {/* Wait for the session check so the link doesn't flash. */}
+            {checked &&
+              (isAdmin ? (
+                <button
+                  type="button"
+                  className="mast__link mast__link--btn"
+                  onClick={handleSignOut}
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="mast__link"
+                  aria-current={pathname === "/login" ? "page" : undefined}
+                >
+                  Admin
+                </Link>
+              ))}
+            <ThemeToggle />
+          </span>
         </p>
 
         <Link href="/" className="mast__name">

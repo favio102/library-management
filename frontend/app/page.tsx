@@ -12,6 +12,7 @@ import {
   SearchBar,
 } from "@/components";
 import { useBooks } from "@/context/BookContext";
+import { useAuth } from "@/context/AuthContext";
 import { BookProps } from "@/types";
 
 const PAGE_SIZE = 12;
@@ -31,6 +32,7 @@ const blankBook: BookProps = {
 
 export default function Home() {
   const { books, status, addBook, updateBook } = useBooks();
+  const { isAdmin } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,12 +83,14 @@ export default function Home() {
               setSearchQuery={setSearchQuery}
               resultCount={filtered.length}
             />
-            <CustomButton
-              title="Add a book"
-              tone="primary"
-              icon={<RiAddLine size={16} />}
-              handleClick={openAddDialog}
-            />
+            {isAdmin && (
+              <CustomButton
+                title="Add a book"
+                tone="primary"
+                icon={<RiAddLine size={16} />}
+                handleClick={openAddDialog}
+              />
+            )}
           </div>
 
           {status === "loading" && (
@@ -101,14 +105,20 @@ export default function Home() {
             <EmptyState
               mark={<RiBookLine size={18} />}
               title="The shelf is empty."
-              body="Nothing has been catalogued yet. Add the first book and it will show up here straight away."
+              body={
+                isAdmin
+                  ? "Nothing has been catalogued yet. Add the first book and it will show up here straight away."
+                  : "Nothing has been catalogued yet."
+              }
               action={
-                <CustomButton
-                  title="Add the first book"
-                  tone="primary"
-                  icon={<RiAddLine size={16} />}
-                  handleClick={openAddDialog}
-                />
+                isAdmin ? (
+                  <CustomButton
+                    title="Add the first book"
+                    tone="primary"
+                    icon={<RiAddLine size={16} />}
+                    handleClick={openAddDialog}
+                  />
+                ) : undefined
               }
             />
           )}
@@ -154,7 +164,7 @@ export default function Home() {
       </div>
 
       <BookDetails
-        isOpen={isOpen}
+        isOpen={isOpen && isAdmin}
         closeModal={() => setIsOpen(false)}
         isEditing={false}
         bookId={null}

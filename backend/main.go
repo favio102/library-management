@@ -47,9 +47,11 @@ func createRouter() http.Handler {
 	// Configure CORS
 	frontendURL := os.Getenv("FRONTEND_URL")
 	log.Printf("Frontend URL allowed for CORS: %s\n", frontendURL)
+	// Browsers only read from this API. Writes come server-to-server from the
+	// Next.js app (see routes/auth.go), which CORS does not apply to.
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins: []string{frontendURL}, // Allow frontend URL
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{"GET", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type"},
 	})
 
