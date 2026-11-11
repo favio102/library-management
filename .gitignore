@@ -49,3 +49,9 @@ backend/logs/
 backend/.env
 
 .DS_Store
+# Go build output
+backend/main
+backend/library-management
+backend/app
+url-service/url-cleanup
+url-service/app
