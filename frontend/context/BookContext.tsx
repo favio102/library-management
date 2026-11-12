@@ -28,12 +28,20 @@ const BookContext = createContext<BookContextProps | undefined>(undefined);
  * The request is genuinely deferred — Undo means the book was never deleted. */
 const UNDO_WINDOW = 6000;
 
+/* Render's free plan puts the API to sleep after 15 idle minutes and it takes
+ * about a minute to wake. The first load times out while it boots, so keep
+ * retrying quietly and swap the real shelf in as soon as it answers. */
+const WAKE_RETRY_MS = 60_000; // waking takes about a minute
+const WAKE_MAX_TRIES = 5; // give up after ~5 minutes; sample rows stay up
+
 export const BookProvider = ({ children }: { children: ReactNode }) => {
   const { markSignedOut } = useAuth();
 
   const [books, setBooks] = useState<BookProps[]>([]);
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [error, setError] = useState<string | null>(null);
+  /* True once the wake-up retries have run out without an answer. */
+  const [gaveUp, setGaveUp] = useState(false);
 
   /* A mirror of `books` so delete can read the current list without making
    * every consumer re-subscribe. */
@@ -57,6 +65,7 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
       if (!background) {
         setStatus("loading");
         setError(null);
+        setGaveUp(false);
       }
       try {
         const fetched = await getBooks();
@@ -64,6 +73,7 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
         setStatus("ready");
         setError(null);
         lastFetchedAt.current = Date.now();
+        return true;
       } catch (cause) {
         const message =
           cause instanceof Error
@@ -72,7 +82,7 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
         if (background) {
           /* Silent — the user still has the last good copy in front of them. */
           console.warn("[catalogue] background refresh failed:", message);
-          return;
+          return false;
         }
         /* Fall back to sample rows so a dead API renders something
          * diagnosable instead of skeletons that never resolve. The UI flags
@@ -80,10 +90,38 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
         setBooks(fallbackBooks);
         setError(message);
         setStatus("error");
+        return false;
       }
     },
     []
   );
+
+  /* While the shelf is showing sample rows, keep knocking until the API is
+   * awake. A success flips status to "ready", which ends this effect. */
+  useEffect(() => {
+    if (status !== "error") return;
+
+    let cancelled = false;
+    let tries = 0;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const attempt = async () => {
+      tries += 1;
+      const ok = await fetchBooks({ background: true });
+      if (cancelled || ok) return;
+      if (tries >= WAKE_MAX_TRIES) {
+        setGaveUp(true);
+        return;
+      }
+      timer = setTimeout(attempt, WAKE_RETRY_MS);
+    };
+
+    timer = setTimeout(attempt, WAKE_RETRY_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [status, fetchBooks]);
 
   useEffect(() => {
     fetchBooks();
@@ -226,6 +264,7 @@ export const BookProvider = ({ children }: { children: ReactNode }) => {
         books,
         status,
         error,
+        waking: status === "error" && !gaveUp,
         fetchBooks,
         addBook,
         updateBook,

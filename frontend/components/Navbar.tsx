@@ -15,7 +15,7 @@ import ThemeToggle from "./ThemeToggle";
  * by whichever page opens it, and the record actions live on the record. */
 const Navbar = () => {
   const pathname = usePathname();
-  const { books, status } = useBooks();
+  const { books, status, waking } = useBooks();
   const { isAdmin, checked, logout } = useAuth();
 
   const handleSignOut = () =>
@@ -28,7 +28,9 @@ const Navbar = () => {
     status === "ready"
       ? `${books.length} ${books.length === 1 ? "book" : "books"} on the shelf`
       : status === "error"
-        ? "Catalogue unavailable"
+        ? waking
+          ? "Waking up the server…"
+          : "Catalogue unavailable"
         : "Loading…";
 
   return (

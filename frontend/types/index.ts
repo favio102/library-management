@@ -89,8 +89,11 @@ export interface BookContextProps {
   books: BookProps[];
   status: LoadStatus;
   error: string | null;
-  /** `background: true` re-syncs without dropping the shelf to skeletons. */
-  fetchBooks: (options?: { background?: boolean }) => Promise<void>;
+  /** The API didn't answer yet and is being retried (Render cold start). */
+  waking: boolean;
+  /** `background: true` re-syncs without dropping the shelf to skeletons.
+   *  Resolves true when the catalogue loaded. */
+  fetchBooks: (options?: { background?: boolean }) => Promise<boolean>;
   addBook: (book: BookProps) => Promise<void>;
   updateBook: (updatedBook: BookProps) => Promise<void>;
   /** Optimistic delete. The request is held open for the Undo window. */
